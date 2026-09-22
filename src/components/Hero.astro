@@ -9,85 +9,83 @@ const kiwami = getProject('kiwami')!;
 
 <section class="hero wrap" aria-labelledby="hero-title">
   <div class="copy">
-    <p class="label status"><span class="dot" aria-hidden="true"></span> Frontend engineer · open to new roles</p>
-    <h1 id="hero-title">
-      Software for the barn, the mill, the dorm room and the couch.
-    </h1>
-    <div class="lede prose">
-      <p>
-        I’m Faizan. Most of what I build ends up a long way from a design review: a dairy farm
-        recording the morning milking, a flour mill owner chasing a payment on WhatsApp, a student
-        studying offline, someone on the sofa with a TV remote.
-      </p>
-      <p>I care about the parts those people never notice, until they’re missing.</p>
+    <p class="status"><span class="dot" aria-hidden="true"></span> Frontend engineer · open to new roles</p>
+    <h1 id="hero-title">Software for the barn, the mill, the dorm room and the couch.</h1>
+    <p class="lede">
+      I’m Faizan. I build interfaces for people who just want the thing to work: a dairy farm
+      logging the morning milking, a mill owner chasing a payment, a student studying offline,
+      someone on the sofa with a TV remote.
+    </p>
+    <div class="actions">
+      <a class="btn" href="#work">See the work <span aria-hidden="true">↓</span></a>
+      <a class="btn ghost" href="#contact">Get in touch</a>
     </div>
-    <p class="jump"><a href="#work">See the work</a> <span aria-hidden="true">↓</span></p>
   </div>
 
-  <div class="collage" aria-hidden="true">
-    <Shot shot={milksage.cover} sizes="(width < 60rem) 80vw, 40vw" eager class="c-screen" />
-    <Shot shot={grainova.cover} sizes="(width < 60rem) 30vw, 13vw" eager class="c-phone-a" />
-    <Shot shot={kiwami.cover} sizes="(width < 60rem) 30vw, 13vw" eager class="c-phone-b" />
+  <div class="collage panel" aria-hidden="true">
+    <div class="stack">
+      <Shot shot={milksage.cover} sizes="(width < 60rem) 80vw, 38vw" eager class="c-screen" />
+      <Shot shot={grainova.cover} sizes="(width < 60rem) 28vw, 12vw" eager class="c-phone-a" />
+      <Shot shot={kiwami.cover} sizes="(width < 60rem) 26vw, 11vw" eager class="c-phone-b" />
+    </div>
   </div>
 </section>
 
 <style>
   .hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
     align-items: center;
-    padding-block: clamp(3rem, 8vw, 7rem) clamp(3rem, 7vw, 6rem);
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(3.5rem, 8vw, 6.5rem);
   }
-  @media (width < 60rem) {
-    .hero { grid-template-columns: 1fr; }
-  }
+  @media (width < 60rem) { .hero { grid-template-columns: 1fr; } }
 
-  .status { display: flex; align-items: center; gap: 0.6rem; }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0.8rem 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: var(--paper-2);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
   .dot {
-    width: 0.5rem;
+    width: 0.45rem;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: oklch(62% 0.15 150);
+    background: var(--accent);
   }
 
   h1 {
-    font-size: clamp(2rem, 1.5rem + 2vw, 3.2rem);
-    line-height: 1.12;
-    margin-block: 1.1rem 1.5rem;
-    max-width: 17ch;
+    font-size: var(--step-4);
+    margin-block: 1.4rem;
+    max-width: 15ch;
   }
+  .lede {
+    color: var(--ink-2);
+    font-size: var(--step-1);
+    line-height: 1.6;
+    max-width: 40ch;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; }
 
-  .lede { color: var(--ink-2); font-size: var(--step-0); line-height: 1.65; max-width: 44ch; }
-  .lede p:last-child { color: var(--ink); }
-  .jump { margin-top: 2rem; font-size: var(--step--1); }
-
+  /* The collage sits in a quiet panel with a faint wash of the accent. */
   .collage {
     position: relative;
-    aspect-ratio: 1.08;
-    max-width: 100%;
+    overflow: clip;
+    padding: clamp(1rem, 4%, 2.5rem);
+    background:
+      radial-gradient(120% 90% at 85% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%),
+      var(--paper-2);
+  }
+  .stack {
+    position: relative;
+    aspect-ratio: 1.12;
     container-type: inline-size;
   }
-  .collage :global(.c-screen) {
-    position: absolute;
-    inset: 6% 0 auto 4%;
-    width: 92cqi;
-  }
-  .collage :global(.c-phone-a) {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 30cqi;
-    rotate: -2.5deg;
-  }
-  .collage :global(.c-phone-b) {
-    position: absolute;
-    right: 4%;
-    bottom: 3%;
-    width: 27cqi;
-    rotate: 2deg;
-  }
-  @media (width < 60rem) {
-    .collage { max-width: 36rem; }
-  }
+  .stack :global(.c-screen) { position: absolute; inset: 4% 0 auto 6%; width: 94cqi; }
+  .stack :global(.c-phone-a) { position: absolute; left: 0; bottom: 0; width: 29cqi; }
+  .stack :global(.c-phone-b) { position: absolute; right: 5%; bottom: 4%; width: 26cqi; }
 </style>

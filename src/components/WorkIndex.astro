@@ -4,161 +4,116 @@ import { projects } from '../data/projects';
 ---
 
 <section id="work" class="work wrap" aria-labelledby="work-title">
-  <header class="work-head">
+  <div class="section-head">
     <h2 id="work-title">Selected work</h2>
-    <p class="label">{projects.length} projects · 2026</p>
-  </header>
+    <p class="label">{projects.length} projects · web, mobile, desktop</p>
+  </div>
 
-  <ol class="index" role="list">
+  <ol class="grid" role="list">
     {
       projects.map((p, i) => (
-        <li class="row" style={`--brand:${p.brand}; --anchor:--row-${i}`}>
-          <a href={`/work/${p.slug}`} class="row-link">
-            <span class="name" data-vt={p.slug}>{p.name}</span>
-            <span class="desc">
-              <span class="place">Used in {p.place}</span>
-              <span class="summary">{p.summary}</span>
-            </span>
-            <span class="meta label">
-              {p.platform}
-              <span class="arrow" aria-hidden="true">→</span>
-            </span>
-            <Shot shot={p.cover} sizes="(width < 48rem) 40vw, 1px" class="row-thumb" />
+        <li class:list={['card', { feature: i === 0 }]}>
+          <a href={`/work/${p.slug}`}>
+            <div class:list={['media', p.cover.kind]}>
+              <Shot
+                shot={p.cover}
+                sizes={i === 0 ? '(width < 52rem) 90vw, 46rem' : p.cover.kind === 'phone' ? '14rem' : '(width < 52rem) 80vw, 30rem'}
+                eager={i === 0}
+              />
+            </div>
+            <div class="info">
+              <p class="label">{p.platform}</p>
+              <h3 data-vt={p.slug}>{p.name}</h3>
+              <p class="summary">{p.summary}</p>
+              <span class="more">View project <span aria-hidden="true">→</span></span>
+            </div>
           </a>
         </li>
       ))
     }
   </ol>
-
-  {/* One floating preview for the whole list. Which image shows, and which row it sits
-      beside, is decided in CSS with :has() and anchor positioning. No JavaScript. */}
-  <div class="preview" aria-hidden="true">
-    {
-      projects.map((p, i) => (
-        <div class="preview-item" data-i={i}>
-          <Shot shot={p.cover} sizes="26rem" />
-        </div>
-      ))
-    }
-  </div>
 </section>
 
 <style>
-  .work { position: relative; padding-block: clamp(2rem, 5vw, 4rem); }
-  .work-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--ink);
-  }
-  h2 { font-size: var(--step-2); }
+  .work { padding-block: clamp(1rem, 3vw, 2rem) 0; }
 
-  .index {
+  /* Two columns; each card spans two subgrid rows (image, text) so the text
+     blocks of neighbouring cards start on the same line. */
+  .grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, 0.6fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 3vw, 2.5rem);
   }
-  .row {
+  .card {
     display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-    border-bottom: 1px solid var(--line);
-    anchor-name: var(--anchor);
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
   }
-  .row-link {
+  .card > a {
     display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-    align-items: center;
-    column-gap: clamp(1rem, 3vw, 2.5rem);
-    padding-block: clamp(1.1rem, 2.4vw, 1.8rem);
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.25rem;
     text-decoration: none;
-    position: relative;
   }
-  .name {
-    font-family: var(--font-display-stack);
-    font-size: var(--step-3);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.015em;
-    transition: color 0.25s;
-    width: fit-content;
+
+  .media {
+    display: grid;
+    place-items: end center;
+    aspect-ratio: 16 / 11;
+    padding: 9% 9% 0;
+    overflow: clip;
+    border-radius: var(--radius);
+    background: var(--paper-2);
+    transition: background-color 0.3s;
+    min-width: 0;
+    /* Hold the 16:11 box even when a tall phone capture is inside; it peeks out of the bottom edge. */
+    min-height: 0;
+    align-self: start;
   }
-  .desc { display: grid; gap: 0.2rem; }
-  .place { font-size: var(--step-0); }
-  .summary { color: var(--ink-2); font-size: var(--step--1); max-width: 46ch; }
-  .meta {
-    justify-self: end;
-    display: flex;
-    gap: 0.75rem;
+  .media :global(.frame) {
+    width: 100%;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    transition: translate 0.45s var(--ease-out);
+  }
+  .media.phone { padding-top: 7%; }
+  .media.phone :global(.frame) { width: min(42%, 15rem); border-bottom: 0; }
+
+  .info { display: grid; gap: 0.45rem; align-content: start; }
+  h3 { font-size: var(--step-2); }
+  .summary { color: var(--ink-2); max-width: 44ch; }
+  .more {
+    margin-top: 0.4rem;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    display: inline-flex;
+    gap: 0.4rem;
+  }
+  .more span { transition: translate 0.25s var(--ease-out); }
+
+  a:hover .media, a:focus-visible .media { background: var(--paper-3); }
+  a:hover .media :global(.frame) { translate: 0 -6px; }
+  a:hover .more { color: var(--accent); }
+  a:hover .more span { translate: 3px 0; }
+
+  /* First project: a wide card with the text beside the image. */
+  .feature { grid-column: 1 / -1; grid-row: auto; grid-template-rows: none; }
+  .feature > a {
+    grid-row: auto;
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
     align-items: center;
-    text-align: right;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
   }
-  .arrow { transition: translate 0.25s var(--ease-out); }
+  .feature h3 { font-size: var(--step-3); }
+  .feature .media { aspect-ratio: 16 / 10; }
 
-  .row-link:hover .name,
-  .row-link:focus-visible .name { color: var(--ink-2); }
-  .row-link:hover .arrow { translate: 0.3rem 0; }
-
-  /* Hide the inline thumbnail on wide, hover-capable screens; the floating preview takes over. */
-  .row-link :global(.row-thumb) { display: none; }
-
-  @media (width < 48rem) {
-    .index { grid-template-columns: 1fr; }
-    .row-link {
-      grid-template-columns: minmax(0, 1fr) 7.5rem;
-      grid-template-areas: 'name thumb' 'desc thumb' 'meta thumb';
-      row-gap: 0.5rem;
-    }
-    .name { grid-area: name; font-size: var(--step-2); }
-    .desc { grid-area: desc; }
-    .meta { grid-area: meta; justify-self: start; }
-    .row-link :global(.row-thumb) { display: block; grid-area: thumb; align-self: center; }
-    .row-link :global(.row-thumb[data-kind='phone']) { width: 70%; justify-self: center; }
-  }
-
-  /* ---- Floating preview: anchor positioning + :has() ---- */
-  .preview { display: none; }
-
-  @supports (anchor-name: --a) and (position-area: center) {
-    @media (hover: hover) and (width >= 48rem) {
-      .preview { display: contents; }
-      .preview-item {
-        position: absolute;
-        position-area: center span-inline-start;
-        justify-self: end;
-        align-self: center;
-        margin-inline-end: 13rem;
-        width: 22rem;
-        pointer-events: none;
-        opacity: 0;
-        scale: 0.98;
-        transition: opacity 0.25s, scale 0.35s var(--ease-out);
-        z-index: 2;
-      }
-      .preview-item:has(> [data-kind='phone']) { width: 12rem; }
-    }
-  }
-</style>
-
-<style is:global>
-  /* Generated per row so each preview anchors to its own row and appears only while it's hovered. */
-  @supports (anchor-name: --a) and (position-area: center) {
-    @media (hover: hover) and (width >= 48rem) {
-      .preview-item[data-i='0'] { position-anchor: --row-0; }
-      .preview-item[data-i='1'] { position-anchor: --row-1; }
-      .preview-item[data-i='2'] { position-anchor: --row-2; }
-      .preview-item[data-i='3'] { position-anchor: --row-3; }
-      .preview-item[data-i='4'] { position-anchor: --row-4; }
-      .work:has(.row:nth-child(1) > a:is(:hover, :focus-visible)) .preview-item[data-i='0'],
-      .work:has(.row:nth-child(2) > a:is(:hover, :focus-visible)) .preview-item[data-i='1'],
-      .work:has(.row:nth-child(3) > a:is(:hover, :focus-visible)) .preview-item[data-i='2'],
-      .work:has(.row:nth-child(4) > a:is(:hover, :focus-visible)) .preview-item[data-i='3'],
-      .work:has(.row:nth-child(5) > a:is(:hover, :focus-visible)) .preview-item[data-i='4'] {
-        opacity: 1;
-        scale: 1;
-      }
-    }
+  @media (width < 52rem) {
+    .grid { grid-template-columns: 1fr; }
+    .feature > a { grid-template-columns: 1fr; }
   }
 </style>

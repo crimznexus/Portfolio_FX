@@ -14,38 +14,39 @@
 /* ------------------------------------------------------------------ */
 @layer tokens {
   :root {
-    /* One declaration per colour: light-dark() picks the side from color-scheme,
-       which the theme switch sets. No duplicated dark palette to drift. */
-    color-scheme: light dark;
+    /* Warm graphite by default. Every colour is declared once with light-dark();
+       the theme menu only changes color-scheme. */
+    color-scheme: dark;
 
-    --paper:   light-dark(oklch(96.6% 0.006 240), oklch(17.5% 0.012 255));
-    --paper-2: light-dark(oklch(93.4% 0.008 240), oklch(21.5% 0.014 255));
-    --ink:     light-dark(oklch(24% 0.028 256),   oklch(93% 0.008 240));
-    --ink-2:   light-dark(oklch(46% 0.022 252),   oklch(73% 0.014 245));
-    --line:    light-dark(oklch(86.5% 0.01 245),  oklch(31% 0.016 255));
-    --accent:  light-dark(oklch(49% 0.165 18),    oklch(71% 0.14 16));
-    --accent-soft: color-mix(in oklch, var(--accent) 14%, var(--paper));
+    --paper:   light-dark(#f3f1ec, #171815);
+    --paper-2: light-dark(#e9e6df, #1f201c);
+    --paper-3: light-dark(#dedad1, #292a25);
+    --ink:     light-dark(#1a1b17, #ece8df);
+    --ink-2:   light-dark(#5e5d55, #a6a294);
+    --ink-3:   light-dark(#85837a, #7b786d);
+    --line:    light-dark(#d6d2c8, #31322c);
+    --accent:  light-dark(#56703c, #a9bc8c);
 
-    --font-display-stack: var(--font-display), Georgia, serif;
+    --font-display-stack: var(--font-display), system-ui, sans-serif;
     --font-body-stack: var(--font-body), system-ui, sans-serif;
     --font-mono-stack: var(--font-mono), ui-monospace, monospace;
 
-    /* Fluid type scale (min at 360px, max at 1440px) */
+    /* Fluid type scale (360px → 1440px) */
     --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
-    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-    --step-1: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
-    --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2.1rem);
-    --step-3: clamp(2rem, 1.6rem + 1.8vw, 3.2rem);
-    --step-4: clamp(2.3rem, 1.9rem + 1.8vw, 3.5rem);
-    --step-5: clamp(2.6rem, 2rem + 2.6vw, 4.2rem);
+    --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.1rem);
+    --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
+    --step-2: clamp(1.4rem, 1.25rem + 0.7vw, 1.85rem);
+    --step-3: clamp(1.8rem, 1.5rem + 1.3vw, 2.6rem);
+    --step-4: clamp(2.2rem, 1.7rem + 2.3vw, 3.7rem);
 
     --gutter: clamp(1rem, 4vw, 3rem);
-    --measure: 64ch;
-    --radius: 6px;
+    --measure: 62ch;
+    --radius: 14px;
+    --radius-sm: 8px;
     --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
   }
   :root[data-theme='light'] { color-scheme: light; }
-  :root[data-theme='dark'] { color-scheme: dark; }
+  :root[data-theme='system'] { color-scheme: light dark; }
 }
 
 /* ------------------------------------------------------------------ */
@@ -54,11 +55,11 @@
     background: var(--paper);
     color: var(--ink);
     font-family: var(--font-body-stack);
-    font-size: 100%;
     line-height: 1.6;
     scrollbar-gutter: stable;
     interpolate-size: allow-keywords;
     accent-color: var(--accent);
+    scroll-padding-top: 5rem;
   }
   body {
     background: var(--paper);
@@ -71,35 +72,31 @@
   main { flex: 1; }
   h1, h2, h3 {
     font-family: var(--font-display-stack);
-    font-weight: 400;
-    line-height: 1.12;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
   p, li { text-wrap: pretty; }
   a {
     color: inherit;
     text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-    text-decoration-color: color-mix(in oklch, currentColor 40%, transparent);
+    text-underline-offset: 0.22em;
+    text-decoration-color: var(--line);
     transition: text-decoration-color 0.2s, color 0.2s;
     &:hover { text-decoration-color: var(--accent); }
   }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 4px;
   }
   ::selection { background: var(--accent); color: var(--paper); }
-  .visually-hidden {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip-path: inset(50%); white-space: nowrap;
-  }
   .label {
     font-family: var(--font-mono-stack);
     font-size: var(--step--1);
-    letter-spacing: 0.04em;
-    color: var(--ink-2);
+    letter-spacing: 0.02em;
+    color: var(--ink-3);
   }
 }
 
@@ -107,7 +104,7 @@
 @layer layout {
   .wrap {
     width: 100%;
-    max-width: 88rem;
+    max-width: 80rem;
     margin-inline: auto;
     padding-inline: var(--gutter);
   }
@@ -116,44 +113,77 @@
     display: grid;
     gap: 1em;
   }
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+  .section-head h2 { font-size: var(--step-3); }
 }
 
 /* ------------------------------------------------------------------ */
 @layer components {
+  .panel {
+    background: var(--paper-2);
+    border-radius: var(--radius);
+  }
   .stage {
     background: var(--paper-2);
     border-radius: var(--radius);
   }
   .frame {
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     overflow: clip;
-    background: var(--paper-2);
+    background: var(--paper-3);
     box-shadow:
-      0 0 0 1px color-mix(in oklch, var(--ink) 8%, transparent),
-      0 1px 2px color-mix(in oklch, var(--ink) 8%, transparent),
-      0 24px 48px -24px color-mix(in oklch, var(--ink) 35%, transparent);
+      0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent),
+      0 30px 60px -30px rgb(0 0 0 / 0.55);
     & img { width: 100%; height: auto; }
   }
   .frame[data-kind='phone'] {
-    border-radius: 1.4rem;
-    border: 4px solid oklch(18% 0.01 255);
+    border-radius: 1.3rem;
+    border: 4px solid #0d0e0c;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.2rem;
+    border-radius: 999px;
+    font-size: var(--step--1);
+    font-weight: 500;
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+    transition: background-color 0.2s, translate 0.2s var(--ease-out);
+    &:hover { background: var(--accent); color: var(--paper); translate: 0 -1px; }
+  }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+    &:hover { box-shadow: inset 0 0 0 1px var(--ink-2); background: transparent; color: var(--ink); }
   }
 }
 
 /* ------------------------------------------------------------------ */
 @layer motion {
-  /* Cross-document view transitions: navigations between pages morph instead of flashing. */
+  /* Cross-document view transitions: navigations morph instead of flashing. */
   @view-transition { navigation: auto; }
 
   ::view-transition-group(*) {
-    animation-duration: 0.55s;
+    animation-duration: 0.5s;
     animation-timing-function: var(--ease-out);
   }
-  ::view-transition-old(root) { animation: 0.25s ease both vt-fade-out; }
-  ::view-transition-new(root) { animation: 0.4s var(--ease-out) 0.08s both vt-rise; }
+  ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+  ::view-transition-new(root) { animation: 0.35s var(--ease-out) 0.06s both vt-rise; }
 
   @keyframes vt-fade-out { to { opacity: 0; } }
-  @keyframes vt-rise { from { opacity: 0; translate: 0 12px; } }
+  @keyframes vt-rise { from { opacity: 0; translate: 0 8px; } }
 
   @media (prefers-reduced-motion: reduce) {
     @view-transition { navigation: none; }

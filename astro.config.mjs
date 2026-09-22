@@ -13,11 +13,11 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Newsreader',
+      name: 'Bricolage Grotesque',
       cssVariable: '--font-display',
-      weights: ['300 600'],
-      styles: ['normal', 'italic'],
-      fallbacks: ['Georgia', 'serif'],
+      weights: ['400 700'],
+      styles: ['normal'],
+      fallbacks: ['system-ui', 'sans-serif'],
     },
     {
       provider: fontProviders.fontsource(),

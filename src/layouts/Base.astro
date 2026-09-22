@@ -32,8 +32,7 @@ const speculationRules = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#14171c" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#171815" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -43,7 +42,7 @@ const speculationRules = {
     <script is:inline>
       try {
         const t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        if (t === 'light' || t === 'system') document.documentElement.dataset.theme = t;
       } catch {}
     </script>
 

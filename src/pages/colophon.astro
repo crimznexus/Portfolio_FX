@@ -13,14 +13,14 @@ const features = [
     how: 'Project pages are prerendered when you show intent (hover or focus), so the transition usually starts instantly.',
   },
   {
-    name: 'CSS anchor positioning + :has()',
-    where: 'The preview beside each project row, the theme menu, the "Copied" toast',
-    how: 'The row preview is pure CSS: :has() decides which image shows, anchor-name and position-area decide where. The menu flips above the button with position-try-fallbacks when there is no room below.',
+    name: 'CSS anchor positioning',
+    where: 'The theme menu and the "Copied" toast',
+    how: 'anchor-name and position-area pin each popover to its button; position-try-fallbacks flips the menu when there is no room below.',
   },
   {
     name: 'Scroll-driven animations',
-    where: 'The reading bar and screenshots on project pages',
-    how: 'animation-timeline: scroll() and view() replace scroll listeners. Nothing is hidden waiting for an animation.',
+    where: 'The header, the reading bar and screenshots on project pages',
+    how: 'animation-timeline: scroll() and view() replace scroll listeners: the header’s hairline fades in as you scroll, and the progress bar tracks reading. Nothing is hidden waiting for an animation.',
   },
   {
     name: 'Popover API, <dialog> and @starting-style',
@@ -33,14 +33,14 @@ const features = [
     how: 'Buttons open their dialog with commandfor and command="show-modal"; closedby="any" closes it from the backdrop. A few lines of script cover browsers that don’t have these yet.',
   },
   {
-    name: 'light-dark() and OKLCH',
+    name: 'light-dark() and color-mix()',
     where: 'Every colour',
-    how: 'Each colour is declared once with both values. The theme switch only changes color-scheme. Hover and border tints are derived with color-mix() in OKLCH.',
+    how: 'Each colour is declared once with both values. The theme menu (Graphite, Paper, or match system) only changes color-scheme. Hover tints and the soft accent washes come from color-mix().',
   },
   {
     name: 'Subgrid and container queries',
-    where: 'The project index, the About section',
-    how: 'Rows share one set of columns through subgrid, so every name, description and platform lines up. About reflows from the width of its own box, not the window.',
+    where: 'The project cards, the toolkit',
+    how: 'Each card spans two subgrid rows, so the text of neighbouring cards starts on the same line whatever the image. The toolkit and contact panels reflow from their own width.',
   },
   {
     name: 'Cascade layers and native nesting',
@@ -62,7 +62,7 @@ const features = [
       <p>
         It’s a static <a href="https://astro.build">Astro</a> site with no client-side framework. The
         only JavaScript is the theme switch, the copy button and a couple of fallbacks. Fonts
-        (Newsreader, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
+        (Bricolage Grotesque, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
         screenshot is served as WebP at the size your screen needs.
       </p>
       <p>
