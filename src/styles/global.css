@@ -1,0 +1,171 @@
+@layer reset, tokens, base, layout, components, motion;
+
+/* ------------------------------------------------------------------ */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  html { -webkit-text-size-adjust: none; text-size-adjust: none; }
+  img, picture, svg { display: block; max-width: 100%; height: auto; }
+  input, button, textarea, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; padding: 0; cursor: pointer; }
+  ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
+}
+
+/* ------------------------------------------------------------------ */
+@layer tokens {
+  :root {
+    /* One declaration per colour: light-dark() picks the side from color-scheme,
+       which the theme switch sets. No duplicated dark palette to drift. */
+    color-scheme: light dark;
+
+    --paper:   light-dark(oklch(96.6% 0.006 240), oklch(17.5% 0.012 255));
+    --paper-2: light-dark(oklch(93.4% 0.008 240), oklch(21.5% 0.014 255));
+    --ink:     light-dark(oklch(24% 0.028 256),   oklch(93% 0.008 240));
+    --ink-2:   light-dark(oklch(46% 0.022 252),   oklch(73% 0.014 245));
+    --line:    light-dark(oklch(86.5% 0.01 245),  oklch(31% 0.016 255));
+    --accent:  light-dark(oklch(49% 0.165 18),    oklch(71% 0.14 16));
+    --accent-soft: color-mix(in oklch, var(--accent) 14%, var(--paper));
+
+    --font-display-stack: var(--font-display), Georgia, serif;
+    --font-body-stack: var(--font-body), system-ui, sans-serif;
+    --font-mono-stack: var(--font-mono), ui-monospace, monospace;
+
+    /* Fluid type scale (min at 360px, max at 1440px) */
+    --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+    --step-1: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+    --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2.1rem);
+    --step-3: clamp(2rem, 1.6rem + 1.8vw, 3.2rem);
+    --step-4: clamp(2.6rem, 1.9rem + 3.2vw, 5.2rem);
+    --step-5: clamp(3.1rem, 2rem + 5vw, 7.4rem);
+
+    --gutter: clamp(1rem, 4vw, 3rem);
+    --measure: 64ch;
+    --radius: 6px;
+    --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark'] { color-scheme: dark; }
+}
+
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body-stack);
+    font-size: 100%;
+    line-height: 1.6;
+    scrollbar-gutter: stable;
+    interpolate-size: allow-keywords;
+    accent-color: var(--accent);
+  }
+  body {
+    background: var(--paper);
+    font-size: var(--step-0);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { flex: 1; }
+  h1, h2, h3 {
+    font-family: var(--font-display-stack);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  p, li { text-wrap: pretty; }
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in oklch, currentColor 40%, transparent);
+    transition: text-decoration-color 0.2s, color 0.2s;
+    &:hover { text-decoration-color: var(--accent); }
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
+  .label {
+    font-family: var(--font-mono-stack);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+@layer layout {
+  .wrap {
+    width: 100%;
+    max-width: 88rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .prose {
+    max-width: var(--measure);
+    display: grid;
+    gap: 1em;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+@layer components {
+  .stage {
+    --brand: var(--accent);
+    background: light-dark(
+      color-mix(in oklch, var(--brand) 16%, var(--paper)),
+      color-mix(in oklch, var(--brand) 24%, var(--paper))
+    );
+    border-radius: var(--radius);
+  }
+  .frame {
+    border-radius: var(--radius);
+    overflow: clip;
+    background: var(--paper-2);
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--ink) 8%, transparent),
+      0 1px 2px color-mix(in oklch, var(--ink) 8%, transparent),
+      0 24px 48px -24px color-mix(in oklch, var(--ink) 35%, transparent);
+    & img { width: 100%; height: auto; }
+  }
+  .frame[data-kind='phone'] {
+    border-radius: 1.4rem;
+    border: 4px solid oklch(18% 0.01 255);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+@layer motion {
+  /* Cross-document view transitions: navigations between pages morph instead of flashing. */
+  @view-transition { navigation: auto; }
+
+  ::view-transition-group(*) {
+    animation-duration: 0.55s;
+    animation-timing-function: var(--ease-out);
+  }
+  ::view-transition-old(root) { animation: 0.25s ease both vt-fade-out; }
+  ::view-transition-new(root) { animation: 0.4s var(--ease-out) 0.08s both vt-rise; }
+
+  @keyframes vt-fade-out { to { opacity: 0; } }
+  @keyframes vt-rise { from { opacity: 0; translate: 0 12px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

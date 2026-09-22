@@ -1,0 +1,114 @@
+---
+import Base from '../layouts/Base.astro';
+
+const features = [
+  {
+    name: 'Cross-document view transitions',
+    where: 'Moving between the index and a project',
+    how: 'One line, @view-transition { navigation: auto }, plus matching view-transition-name values, so project titles glide between pages. No client-side router.',
+  },
+  {
+    name: 'Speculation Rules',
+    where: 'Every link to a project',
+    how: 'Project pages are prerendered when you show intent (hover or focus), so the transition usually starts instantly.',
+  },
+  {
+    name: 'CSS anchor positioning + :has()',
+    where: 'The preview beside each project row, the theme menu, the "Copied" toast',
+    how: 'The row preview is pure CSS: :has() decides which image shows, anchor-name and position-area decide where. The menu flips above the button with position-try-fallbacks when there is no room below.',
+  },
+  {
+    name: 'Scroll-driven animations',
+    where: 'The reading bar on project pages, the hero, the screens',
+    how: 'animation-timeline: scroll() and view() replace scroll listeners. The hero’s italic places get heavier on the variable font’s weight axis as you scroll. Nothing is hidden waiting for an animation.',
+  },
+  {
+    name: 'Popover API, <dialog> and @starting-style',
+    where: 'Theme menu, toast, image lightbox',
+    how: 'Top-layer elements with native light dismiss and focus handling. @starting-style and transition-behavior: allow-discrete animate them in and out of display: none.',
+  },
+  {
+    name: 'Invoker Commands and closedby',
+    where: 'Opening a screenshot',
+    how: 'Buttons open their dialog with commandfor and command="show-modal"; closedby="any" closes it from the backdrop. A few lines of script cover browsers that don’t have these yet.',
+  },
+  {
+    name: 'light-dark() and OKLCH',
+    where: 'Every colour',
+    how: 'Each colour is declared once with both values. The theme switch only changes color-scheme. Project tints come from color-mix() in OKLCH, so they stay even in both themes.',
+  },
+  {
+    name: 'Subgrid and container queries',
+    where: 'The project index, the About section',
+    how: 'Rows share one set of columns through subgrid, so every name, description and platform lines up. About reflows from the width of its own box, not the window.',
+  },
+  {
+    name: 'Cascade layers and native nesting',
+    where: 'The whole stylesheet',
+    how: '@layer keeps reset, tokens, components and motion in a predictable order. No preprocessor.',
+  },
+];
+---
+
+<Base title="How this site is built" description="The platform features behind this portfolio, and where each one is used.">
+  <article class="wrap colophon">
+    <p class="label">Colophon</p>
+    <h1>How this site is built</h1>
+    <div class="intro prose">
+      <p>
+        A portfolio is a frontend project too, so I built this one to use what the web platform can
+        do now, rather than reaching for a library each time.
+      </p>
+      <p>
+        It’s a static <a href="https://astro.build">Astro</a> site with no client-side framework. The
+        only JavaScript is the theme switch, the copy button and a couple of fallbacks. Fonts
+        (Bodoni Moda, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
+        screenshot is served as AVIF or WebP at the size your screen needs.
+      </p>
+      <p>
+        Every feature is progressive. In a browser that lacks one, the page still works and simply
+        does a little less.
+      </p>
+    </div>
+
+    <ul class="features" role="list">
+      {
+        features.map((f) => (
+          <li>
+            <h2>{f.name}</h2>
+            <p class="label">{f.where}</p>
+            <p>{f.how}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="source label">
+      Screenshots were captured by running each project locally: in a browser, on an Android
+      emulator, or rendered straight from the desktop app’s window.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .colophon { padding-block: clamp(3rem, 7vw, 6rem) 0; }
+  h1 { font-size: var(--step-4); margin-block: 0.75rem 1.5rem; }
+  .intro { font-size: var(--step-1); line-height: 1.55; }
+  .intro p + p { color: var(--ink-2); }
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+    gap: 0 clamp(1.5rem, 4vw, 3.5rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .features li {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .features h2 { font-size: var(--step-1); font-weight: 600; }
+  .features p:last-child { color: var(--ink-2); font-size: var(--step--1); line-height: 1.65; }
+  .source { margin-top: 3rem; max-width: 60ch; }
+</style>

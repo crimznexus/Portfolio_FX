@@ -1,0 +1,114 @@
+---
+import { contact } from '../data/contact';
+---
+
+<section id="contact" class="contact wrap" aria-labelledby="contact-title">
+  <p class="label">Contact</p>
+  <h2 id="contact-title">I’m looking for a frontend role where the details matter.</h2>
+  <p class="lede">Email is the quickest way to reach me.</p>
+
+  <div class="email-row">
+    <a class="email" href={`mailto:${contact.email}`}>{contact.email.split('@')[0]}<span class="at">@</span>{contact.email.split('@')[1]}</a>
+    <button class="copy" type="button" data-copy={contact.email} aria-describedby="copied">
+      Copy
+    </button>
+    <p id="copied" popover="manual" role="status">Copied to clipboard</p>
+  </div>
+
+  <ul class="links" role="list">
+    <li><span class="label">LinkedIn</span><a href={contact.linkedin.href}>{contact.linkedin.label}</a></li>
+    <li><span class="label">GitHub</span><a href={contact.github.href}>{contact.github.label}</a></li>
+    <li><span class="label">Telegram</span><a href={contact.telegram.href}>{contact.telegram.label}</a></li>
+  </ul>
+</section>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.copy');
+  const toast = document.getElementById('copied');
+  let timer: number | undefined;
+  btn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+    } catch {
+      return;
+    }
+    toast?.showPopover?.();
+    clearTimeout(timer);
+    timer = window.setTimeout(() => toast?.hidePopover?.(), 1800);
+  });
+</script>
+
+<style>
+  .contact { padding-block: clamp(5rem, 12vw, 9rem) 0; }
+  h2 {
+    font-size: var(--step-3);
+    font-weight: 450;
+    max-width: 20ch;
+    margin-block: 1rem 1.25rem;
+  }
+  .lede { color: var(--ink-2); font-size: var(--step-1); }
+
+  .email-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.5rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .email {
+    font-family: var(--font-display-stack);
+    font-size: min(var(--step-3), 7.4vw);
+    font-style: italic;
+    letter-spacing: -0.02em;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--accent);
+    overflow-wrap: break-word;
+    &:hover { color: var(--accent); }
+  }
+  .at { font-family: var(--font-body-stack); font-style: normal; font-weight: 300; font-size: 0.8em; padding-inline: 0.05em; }
+  .copy {
+    anchor-name: --copy;
+    font-family: var(--font-mono-stack);
+    font-size: var(--step--1);
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: border-color 0.2s, background-color 0.2s;
+    &:hover { border-color: var(--ink); }
+    &:active { background: var(--paper-2); }
+  }
+
+  /* Toast is a manual popover in the top layer, pinned above the button with anchor positioning. */
+  #copied {
+    position-anchor: --copy;
+    position-area: block-start center;
+    margin: 0 0 0.5rem;
+    inset: auto;
+    padding: 0.4rem 0.75rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: var(--step--1);
+    opacity: 1;
+    translate: 0 0;
+    transition: opacity 0.2s, translate 0.25s var(--ease-out), display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+    &:not(:popover-open) { opacity: 0; translate: 0 4px; }
+    @starting-style {
+      &:popover-open { opacity: 0; translate: 0 4px; }
+    }
+  }
+  @supports not (position-anchor: --x) {
+    #copied { position: fixed; inset: auto auto 1.5rem 50%; translate: -50% 0; }
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .links li { display: grid; gap: 0.2rem; }
+</style>

@@ -1,0 +1,35 @@
+---
+import { Picture } from 'astro:assets';
+import type { Shot } from '../data/projects';
+
+interface Props {
+  shot: Shot;
+  /** Rendered width hint for srcset selection. */
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { shot, sizes, eager = false, class: className, style } = Astro.props;
+const max = shot.kind === 'phone' ? 720 : 1800;
+const widths = (shot.kind === 'phone' ? [240, 360, 480, 720] : [480, 800, 1200, 1800]).filter(
+  (w) => w <= shot.src.width,
+);
+---
+
+<div class:list={['frame', className]} data-kind={shot.kind} style={style}>
+  <Picture
+    src={shot.src}
+    alt={shot.alt}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={widths.length ? widths : [shot.src.width]}
+    width={Math.min(max, shot.src.width)}
+    sizes={sizes}
+    layout="none"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding="async"
+  />
+</div>

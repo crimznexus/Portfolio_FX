@@ -1,0 +1,337 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Shot from '../../components/Shot.astro';
+import { projects, type Project } from '../../data/projects';
+
+export const getStaticPaths = (() =>
+  projects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }))) satisfies GetStaticPaths;
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project: p, next } = Astro.props;
+const phones = p.gallery.filter((g) => g.kind === 'phone').length;
+const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
+---
+
+<Base title={p.name} description={p.summary}>
+  <div class="progress" aria-hidden="true"></div>
+
+  <article class="case" style={`--brand:${p.brand}`}>
+    <header class="case-head wrap">
+      <a class="back label" href="/#work">← All work</a>
+      <p class="label kicker">{p.platform} · {p.year}</p>
+      <h1 style={`view-transition-name:name-${p.slug}`}>{p.name}</h1>
+      <p class="summary">{p.summary}</p>
+
+      <dl class="facts">
+        <div><dt class="label">Role</dt><dd>{p.role}</dd></div>
+        <div><dt class="label">Status</dt><dd>{p.status}</dd></div>
+        <div class="stack"><dt class="label">Built with</dt><dd>{p.stack.join(' · ')}</dd></div>
+        {
+          p.links.length > 0 && (
+            <div>
+              <dt class="label">Links</dt>
+              <dd>
+                {p.links.map((l) => (
+                  <a href={l.href}>{l.label} ↗</a>
+                ))}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    <div class="wrap">
+      <figure class:list={['cover stage', p.cover.kind]}>
+        <Shot shot={p.cover} sizes="(width < 60rem) 92vw, 70rem" eager />
+      </figure>
+    </div>
+
+    <div class="wrap body">
+      <section class="block" aria-labelledby="s-context">
+        <h2 id="s-context">Context</h2>
+        <div class="prose lead">
+          {p.intro.map((para) => <p>{para}</p>)}
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="s-built">
+        <h2 id="s-built">What I built</h2>
+        <ul class="built" role="list">
+          {p.built.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="block" aria-labelledby="s-decisions">
+        <h2 id="s-decisions">Decisions worth mentioning</h2>
+        <div class="decisions">
+          {
+            p.decisions.map((d) => (
+              <div class="decision">
+                <h3>{d.title}</h3>
+                <p>{d.body}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+
+    <section class="gallery-wrap wrap" aria-labelledby="s-gallery">
+      <div class="gallery-head">
+        <h2 id="s-gallery">Screens</h2>
+        <p class="label">{p.captureNote}</p>
+      </div>
+      <ul class:list={['gallery', galleryMode]} role="list">
+        {
+          p.gallery.map((g, i) => (
+            <li class:list={[g.kind]}>
+              <button
+                class="open"
+                type="button"
+                commandfor={`lb-${i}`}
+                command="show-modal"
+                aria-label={`Enlarge: ${g.caption ?? g.alt}`}
+              >
+                <Shot shot={g} sizes={g.kind === 'phone' ? '(width < 48rem) 45vw, 18rem' : '(width < 48rem) 92vw, 44rem'} />
+              </button>
+              {g.caption && <p class="label cap">{g.caption}</p>}
+              <dialog id={`lb-${i}`} class="lightbox" closedby="any" aria-label={g.caption ?? g.alt}>
+                <Shot shot={g} sizes="92vw" />
+                <form method="dialog">
+                  <button class="close label">Close</button>
+                </form>
+              </dialog>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <nav class="next wrap" aria-label="Next project">
+      <a href={`/work/${next.slug}`}>
+        <span class="label">Next project</span>
+        <span class="next-name" style={`view-transition-name:name-${next.slug}`}>{next.name}</span>
+        <span class="next-sum">{next.summary}</span>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<script>
+  // Invoker Commands (commandfor/command) open the dialogs natively where supported.
+  // This is the fallback for browsers that don't have it yet.
+  if (!('command' in HTMLButtonElement.prototype)) {
+    document.querySelectorAll<HTMLButtonElement>('button[commandfor]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const d = document.getElementById(btn.getAttribute('commandfor') ?? '');
+        if (d instanceof HTMLDialogElement) d.showModal();
+      });
+    });
+  }
+  // Same for closedby="any": close when the backdrop is clicked.
+  if (!('closedBy' in HTMLDialogElement.prototype)) {
+    document.querySelectorAll<HTMLDialogElement>('dialog.lightbox').forEach((d) => {
+      d.addEventListener('click', (e) => {
+        if (e.target === d) d.close();
+      });
+    });
+  }
+</script>
+
+<style>
+  /* Reading progress: a scroll-driven animation on the root scroller, no scroll listeners. */
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--accent);
+    transform-origin: 0 50%;
+    scale: 0 1;
+    z-index: 5;
+  }
+  @supports (animation-timeline: scroll()) {
+    .progress { animation: grow linear both; animation-timeline: scroll(root); }
+    @keyframes grow { to { scale: 1 1; } }
+  }
+  @supports not (animation-timeline: scroll()) { .progress { display: none; } }
+
+  .case-head { padding-block: clamp(2rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem); }
+  .back { text-decoration: none; display: inline-block; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .back:hover { color: var(--accent); }
+  h1 {
+    font-size: var(--step-5);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin-top: 0.75rem;
+    width: fit-content;
+  }
+  .summary {
+    font-family: var(--font-display-stack);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.25;
+    max-width: 30ch;
+    margin-top: 1.25rem;
+    color: var(--ink-2);
+    text-wrap: balance;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+    gap: 1.25rem 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .facts div { display: grid; gap: 0.3rem; align-content: start; }
+  .facts .stack { grid-column: span 2; }
+  @media (width < 40rem) { .facts .stack { grid-column: auto; } }
+  .facts dd { margin: 0; font-size: var(--step--1); }
+  .facts dd a { display: block; }
+
+  .cover {
+    margin: 0;
+    padding: clamp(1rem, 5vw, 4.5rem);
+    display: grid;
+    place-items: center;
+  }
+  .cover :global(.frame) { width: 100%; max-width: 68rem; }
+  .cover.phone :global(.frame) { width: min(22rem, 70%); }
+
+  .body { display: grid; gap: clamp(3rem, 7vw, 5.5rem); padding-block: clamp(3rem, 8vw, 6rem); }
+  .block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+    gap: clamp(1rem, 4vw, 4rem);
+  }
+  @media (width < 52rem) { .block { grid-template-columns: 1fr; } }
+  .block h2 { font-size: var(--step-2); font-style: italic; font-weight: 400; }
+  .lead { font-size: var(--step-1); line-height: 1.55; }
+  .lead p + p { color: var(--ink-2); }
+
+  .built { display: grid; gap: 0; max-width: 62ch; }
+  .built li {
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+  .built li:first-child { border-top: 1px solid var(--line); }
+  .built li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.45rem;
+    width: 0.6rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .decisions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .decision { display: grid; gap: 0.6rem; align-content: start; }
+  .decision h3 { font-size: var(--step-1); font-weight: 600; }
+  .decision p { color: var(--ink-2); font-size: var(--step--1); line-height: 1.65; }
+
+  .gallery-wrap { padding-block: 1rem 0; }
+  .gallery-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem 2rem;
+    padding-bottom: 1rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    border-bottom: 1px solid var(--ink);
+  }
+  .gallery-head h2 { font-size: var(--step-2); }
+
+  .gallery {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+    align-items: start;
+  }
+  .gallery.phones { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 42%), 1fr)); }
+  .gallery.mixed li.phone { max-width: 16rem; }
+  .gallery li { display: grid; gap: 0.6rem; }
+  .open {
+    display: block;
+    width: 100%;
+    border-radius: var(--radius);
+    cursor: zoom-in;
+    text-align: start;
+  }
+  .open:hover :global(.frame) { translate: 0 -3px; }
+  .open :global(.frame) { transition: translate 0.3s var(--ease-out); }
+
+  /* Screens drift up slightly as they enter the viewport. Opacity is never touched,
+     so the resting state is always fully visible. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .gallery li {
+        animation: lift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+      @keyframes lift { from { translate: 0 2.5rem; scale: 0.97; } }
+    }
+  }
+
+  .lightbox {
+    max-width: min(92vw, 90rem);
+    max-height: 92dvh;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    margin: auto;
+    opacity: 1;
+    scale: 1;
+    transition: opacity 0.25s, scale 0.3s var(--ease-out), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+    &:not([open]) { opacity: 0; scale: 0.97; }
+    @starting-style { &[open] { opacity: 0; scale: 0.97; } }
+    &::backdrop {
+      background: color-mix(in oklch, oklch(15% 0.01 255) 88%, transparent);
+      backdrop-filter: blur(6px);
+      transition: opacity 0.25s, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+    }
+    &:not([open])::backdrop { opacity: 0; }
+    @starting-style { &[open]::backdrop { opacity: 0; } }
+  }
+  .lightbox :global(.frame) { max-height: 86dvh; width: auto; }
+  .lightbox :global(.frame img) { max-height: calc(86dvh - 8px); width: auto; margin-inline: auto; }
+  .lightbox form { text-align: center; margin-top: 0.75rem; }
+  .close { color: oklch(90% 0.01 240); padding: 0.4rem 0.8rem; }
+
+  .next { margin-top: clamp(5rem, 12vw, 9rem); }
+  .next a {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    border-block: 1px solid var(--line);
+    text-decoration: none;
+  }
+  .next-name {
+    font-family: var(--font-display-stack);
+    font-size: var(--step-5);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    width: fit-content;
+    transition: color 0.25s;
+  }
+  .next a:hover .next-name { color: var(--accent); }
+  .next-sum { color: var(--ink-2); max-width: 50ch; }
+</style>

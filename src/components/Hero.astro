@@ -1,0 +1,115 @@
+---
+import Shot from './Shot.astro';
+import { getProject } from '../data/projects';
+
+const milksage = getProject('milksage')!;
+const grainova = getProject('grainova')!;
+const kiwami = getProject('kiwami')!;
+---
+
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="copy">
+    <p class="label status"><span class="dot" aria-hidden="true"></span> Frontend engineer · open to new roles</p>
+    <h1 id="hero-title">
+      Software for <em>the barn</em>, <em>the mill</em>, <em>the dorm room</em> and <em>the couch</em>.
+    </h1>
+    <div class="lede prose">
+      <p>
+        I’m Faizan. Most of what I build ends up a long way from a design review: a dairy farm
+        recording the morning milking, a flour mill owner chasing a payment on WhatsApp, a student
+        studying offline, someone on the sofa with a TV remote.
+      </p>
+      <p>I care about the parts those people never notice, until they’re missing.</p>
+    </div>
+    <p class="jump"><a href="#work">See the work</a> <span aria-hidden="true">↓</span></p>
+  </div>
+
+  <div class="collage" aria-hidden="true">
+    <Shot shot={milksage.cover} sizes="(width < 60rem) 80vw, 40vw" eager class="c-screen" />
+    <Shot shot={grainova.cover} sizes="(width < 60rem) 30vw, 13vw" eager class="c-phone-a" />
+    <Shot shot={kiwami.cover} sizes="(width < 60rem) 30vw, 13vw" eager class="c-phone-b" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    padding-block: clamp(3rem, 8vw, 7rem) clamp(3rem, 7vw, 6rem);
+  }
+  @media (width < 60rem) {
+    .hero { grid-template-columns: 1fr; }
+  }
+
+  .status { display: flex; align-items: center; gap: 0.6rem; }
+  .dot {
+    width: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: oklch(62% 0.15 150);
+    box-shadow: 0 0 0 4px color-mix(in oklch, oklch(62% 0.15 150) 20%, transparent);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    font-weight: 450;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin-block: 1.25rem 1.75rem;
+    max-width: 14ch;
+  }
+  em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  /* The places get a little heavier as you start to scroll: a scroll-driven
+     animation on the variable font's weight axis. Resting state is fully readable. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      em {
+        animation: settle linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 45vh;
+      }
+      @keyframes settle {
+        to { font-weight: 700; color: var(--accent); }
+      }
+    }
+  }
+
+  .lede { color: var(--ink-2); font-size: var(--step-1); line-height: 1.55; max-width: 42ch; }
+  .lede p:last-child { color: var(--ink); }
+  .jump { margin-top: 2rem; font-size: var(--step--1); }
+
+  .collage {
+    position: relative;
+    aspect-ratio: 1.08;
+    max-width: 100%;
+    container-type: inline-size;
+  }
+  .collage :global(.c-screen) {
+    position: absolute;
+    inset: 6% 0 auto 4%;
+    width: 92cqi;
+  }
+  .collage :global(.c-phone-a) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30cqi;
+    rotate: -2.5deg;
+  }
+  .collage :global(.c-phone-b) {
+    position: absolute;
+    right: 4%;
+    bottom: 3%;
+    width: 27cqi;
+    rotate: 2deg;
+  }
+  @media (width < 60rem) {
+    .collage { max-width: 36rem; }
+  }
+</style>
