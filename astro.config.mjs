@@ -4,8 +4,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
   site: 'https://muhammadfaizan.vercel.app',
   output: 'static',
-  trailingSlash: 'never',
-  build: { format: 'file' },
+  trailingSlash: 'ignore',
   image: {
     layout: 'constrained',
     responsiveStyles: true,
@@ -14,9 +13,9 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Bodoni Moda',
+      name: 'Newsreader',
       cssVariable: '--font-display',
-      weights: ['400 900'],
+      weights: ['300 600'],
       styles: ['normal', 'italic'],
       fallbacks: ['Georgia', 'serif'],
     },

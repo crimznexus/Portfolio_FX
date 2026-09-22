@@ -5,7 +5,7 @@ const features = [
   {
     name: 'Cross-document view transitions',
     where: 'Moving between the index and a project',
-    how: 'One line, @view-transition { navigation: auto }, plus matching view-transition-name values, so project titles glide between pages. No client-side router.',
+    how: '@view-transition { navigation: auto } turns on page-to-page transitions. The pageswap and pagereveal events name only the project you open, so its title glides into place and nothing else moves. No client-side router.',
   },
   {
     name: 'Speculation Rules',
@@ -19,8 +19,8 @@ const features = [
   },
   {
     name: 'Scroll-driven animations',
-    where: 'The reading bar on project pages, the hero, the screens',
-    how: 'animation-timeline: scroll() and view() replace scroll listeners. The hero’s italic places get heavier on the variable font’s weight axis as you scroll. Nothing is hidden waiting for an animation.',
+    where: 'The reading bar and screenshots on project pages',
+    how: 'animation-timeline: scroll() and view() replace scroll listeners. Nothing is hidden waiting for an animation.',
   },
   {
     name: 'Popover API, <dialog> and @starting-style',
@@ -35,7 +35,7 @@ const features = [
   {
     name: 'light-dark() and OKLCH',
     where: 'Every colour',
-    how: 'Each colour is declared once with both values. The theme switch only changes color-scheme. Project tints come from color-mix() in OKLCH, so they stay even in both themes.',
+    how: 'Each colour is declared once with both values. The theme switch only changes color-scheme. Hover and border tints are derived with color-mix() in OKLCH.',
   },
   {
     name: 'Subgrid and container queries',
@@ -62,8 +62,8 @@ const features = [
       <p>
         It’s a static <a href="https://astro.build">Astro</a> site with no client-side framework. The
         only JavaScript is the theme switch, the copy button and a couple of fallbacks. Fonts
-        (Bodoni Moda, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
-        screenshot is served as AVIF or WebP at the size your screen needs.
+        (Newsreader, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
+        screenshot is served as WebP at the size your screen needs.
       </p>
       <p>
         Every feature is progressive. In a browser that lacks one, the page still works and simply

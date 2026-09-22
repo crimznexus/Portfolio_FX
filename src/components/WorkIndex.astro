@@ -14,7 +14,7 @@ import { projects } from '../data/projects';
       projects.map((p, i) => (
         <li class="row" style={`--brand:${p.brand}; --anchor:--row-${i}`}>
           <a href={`/work/${p.slug}`} class="row-link">
-            <span class="name" style={`view-transition-name:name-${p.slug}`}>{p.name}</span>
+            <span class="name" data-vt={p.slug}>{p.name}</span>
             <span class="desc">
               <span class="place">Used in {p.place}</span>
               <span class="summary">{p.summary}</span>
@@ -78,19 +78,15 @@ import { projects } from '../data/projects';
   }
   .name {
     font-family: var(--font-display-stack);
-    font-size: var(--step-4);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: var(--step-3);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
     transition: color 0.25s;
     width: fit-content;
   }
   .desc { display: grid; gap: 0.2rem; }
-  .place {
-    font-family: var(--font-display-stack);
-    font-style: italic;
-    font-size: var(--step-1);
-  }
+  .place { font-size: var(--step-0); }
   .summary { color: var(--ink-2); font-size: var(--step--1); max-width: 46ch; }
   .meta {
     justify-self: end;
@@ -102,7 +98,7 @@ import { projects } from '../data/projects';
   .arrow { transition: translate 0.25s var(--ease-out); }
 
   .row-link:hover .name,
-  .row-link:focus-visible .name { color: var(--accent); }
+  .row-link:focus-visible .name { color: var(--ink-2); }
   .row-link:hover .arrow { translate: 0.3rem 0; }
 
   /* Hide the inline thumbnail on wide, hover-capable screens; the floating preview takes over. */
@@ -115,7 +111,7 @@ import { projects } from '../data/projects';
       grid-template-areas: 'name thumb' 'desc thumb' 'meta thumb';
       row-gap: 0.5rem;
     }
-    .name { grid-area: name; font-size: var(--step-3); }
+    .name { grid-area: name; font-size: var(--step-2); }
     .desc { grid-area: desc; }
     .meta { grid-area: meta; justify-self: start; }
     .row-link :global(.row-thumb) { display: block; grid-area: thumb; align-self: center; }
@@ -137,9 +133,8 @@ import { projects } from '../data/projects';
         width: 22rem;
         pointer-events: none;
         opacity: 0;
-        scale: 0.94;
-        rotate: -1.5deg;
-        transition: opacity 0.22s, scale 0.35s var(--ease-out), rotate 0.35s var(--ease-out);
+        scale: 0.98;
+        transition: opacity 0.25s, scale 0.35s var(--ease-out);
         z-index: 2;
       }
       .preview-item:has(> [data-kind='phone']) { width: 12rem; }
@@ -163,7 +158,6 @@ import { projects } from '../data/projects';
       .work:has(.row:nth-child(5) > a:is(:hover, :focus-visible)) .preview-item[data-i='4'] {
         opacity: 1;
         scale: 1;
-        rotate: 0deg;
       }
     }
   }

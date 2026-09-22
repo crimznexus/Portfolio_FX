@@ -17,7 +17,7 @@ npm run preview
 | --- | --- |
 | `src/data/projects.ts` | All project copy, screenshots and case-study content |
 | `src/data/contact.ts` | Email and social links |
-| `src/assets/shots/` | Source screenshots (Astro generates AVIF/WebP at build time) |
+| `src/assets/shots/` | Source screenshots (Astro generates responsive WebP at build time) |
 | `src/styles/global.css` | Tokens (`light-dark()` + OKLCH), layers, view transitions |
 | `src/pages/work/[slug].astro` | Case-study template |
 | `src/pages/colophon.astro` | "How this site is built" |

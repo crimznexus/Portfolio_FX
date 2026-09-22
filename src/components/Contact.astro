@@ -8,7 +8,7 @@ import { contact } from '../data/contact';
   <p class="lede">Email is the quickest way to reach me.</p>
 
   <div class="email-row">
-    <a class="email" href={`mailto:${contact.email}`}>{contact.email.split('@')[0]}<span class="at">@</span>{contact.email.split('@')[1]}</a>
+    <a class="email" href={`mailto:${contact.email}`}>{contact.email}</a>
     <button class="copy" type="button" data-copy={contact.email} aria-describedby="copied">
       Copy
     </button>
@@ -42,8 +42,7 @@ import { contact } from '../data/contact';
   .contact { padding-block: clamp(5rem, 12vw, 9rem) 0; }
   h2 {
     font-size: var(--step-3);
-    font-weight: 450;
-    max-width: 20ch;
+    max-width: 22ch;
     margin-block: 1rem 1.25rem;
   }
   .lede { color: var(--ink-2); font-size: var(--step-1); }
@@ -57,15 +56,12 @@ import { contact } from '../data/contact';
   }
   .email {
     font-family: var(--font-display-stack);
-    font-size: min(var(--step-3), 7.4vw);
-    font-style: italic;
-    letter-spacing: -0.02em;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--accent);
+    font-size: min(var(--step-2), 6.4vw);
+    letter-spacing: -0.01em;
+    text-decoration-thickness: 1px;
     overflow-wrap: break-word;
     &:hover { color: var(--accent); }
   }
-  .at { font-family: var(--font-body-stack); font-style: normal; font-weight: 300; font-size: 0.8em; padding-inline: 0.05em; }
   .copy {
     anchor-name: --copy;
     font-family: var(--font-mono-stack);

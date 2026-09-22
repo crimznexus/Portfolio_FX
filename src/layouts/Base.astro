@@ -47,6 +47,31 @@ const speculationRules = {
       } catch {}
     </script>
 
+    <!-- Only the project being opened (or returned to) morphs between pages.
+         Names are assigned at navigation time so nothing else ghosts across. -->
+    <script is:inline>
+      (() => {
+        const slugOf = (u) => new URL(u, location.href).pathname.match(/^\/work\/([^/]+)/)?.[1] ?? null;
+        const name = (el, vt) => {
+          if (!el) return;
+          el.style.viewTransitionName = 'project-title';
+          vt.finished.finally(() => (el.style.viewTransitionName = ''));
+        };
+        addEventListener('pageswap', (e) => {
+          if (!e.viewTransition || !e.activation?.entry) return;
+          const to = slugOf(e.activation.entry.url);
+          name(to ? document.querySelector(`[data-vt="${to}"]:not(h1)`) : document.querySelector('h1[data-vt]'), e.viewTransition);
+        });
+        addEventListener('pagereveal', (e) => {
+          if (!e.viewTransition) return;
+          const here = slugOf(location.href);
+          const act = window.navigation?.activation;
+          const from = act?.from ? slugOf(act.from.url) : null;
+          name(here ? document.querySelector('h1[data-vt]') : from && document.querySelector(`[data-vt="${from}"]`), e.viewTransition);
+        });
+      })();
+    </script>
+
     <Font cssVariable="--font-display" preload={[{ style: 'normal' }]} />
     <Font cssVariable="--font-body" preload />
     <Font cssVariable="--font-mono" />

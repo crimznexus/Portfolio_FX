@@ -22,14 +22,15 @@ const widths = (shot.kind === 'phone' ? [240, 360, 480, 720] : [480, 800, 1200, 
   <Picture
     src={shot.src}
     alt={shot.alt}
-    formats={['avif', 'webp']}
+    formats={['webp']}
     fallbackFormat="webp"
+    quality={82}
     widths={widths.length ? widths : [shot.src.width]}
     width={Math.min(max, shot.src.width)}
     sizes={sizes}
     layout="none"
     loading={eager ? 'eager' : 'lazy'}
     fetchpriority={eager ? 'high' : 'auto'}
-    decoding="async"
+    decoding={eager ? 'sync' : 'async'}
   />
 </div>
