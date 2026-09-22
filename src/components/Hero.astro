@@ -1,91 +1,39 @@
 ---
-import Shot from './Shot.astro';
-import { getProject } from '../data/projects';
-
-const milksage = getProject('milksage')!;
-const grainova = getProject('grainova')!;
-const kiwami = getProject('kiwami')!;
+import { contact } from '../data/contact';
+import { projects } from '../data/projects';
 ---
 
 <section class="hero wrap" aria-labelledby="hero-title">
-  <div class="copy">
-    <p class="status"><span class="dot" aria-hidden="true"></span> Frontend engineer · open to new roles</p>
-    <h1 id="hero-title">Software for the barn, the mill, the dorm room and the couch.</h1>
-    <p class="lede">
-      I’m Faizan. I build interfaces for people who just want the thing to work: a dairy farm
-      logging the morning milking, a mill owner chasing a payment, a student studying offline,
-      someone on the sofa with a TV remote.
-    </p>
-    <div class="actions">
-      <a class="btn" href="#work">See the work <span aria-hidden="true">↓</span></a>
-      <a class="btn ghost" href="#contact">Get in touch</a>
-    </div>
-  </div>
-
-  <div class="collage panel" aria-hidden="true">
-    <div class="stack">
-      <Shot shot={milksage.cover} sizes="(width < 60rem) 80vw, 38vw" eager class="c-screen" />
-      <Shot shot={grainova.cover} sizes="(width < 60rem) 28vw, 12vw" eager class="c-phone-a" />
-      <Shot shot={kiwami.cover} sizes="(width < 60rem) 26vw, 11vw" eager class="c-phone-b" />
-    </div>
-  </div>
+  <p class="status"><span class="dot" aria-hidden="true"></span> Open to frontend roles</p>
+  <h1 id="hero-title">Muhammad Faizan</h1>
+  <p class="lede">
+    Frontend engineer. Below are {projects.length} projects across web, Android and desktop, shown
+    as they run.
+  </p>
+  <ul class="links" role="list">
+    <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>
+    <li><a href={contact.github.href}>GitHub</a></li>
+    <li><a href={contact.linkedin.href}>LinkedIn</a></li>
+  </ul>
 </section>
 
 <style>
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: center;
-    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(3.5rem, 8vw, 6.5rem);
-  }
-  @media (width < 60rem) { .hero { grid-template-columns: 1fr; } }
-
+  .hero { padding-block: clamp(3rem, 9vw, 7rem) clamp(2.5rem, 6vw, 4.5rem); }
   .status {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.35rem 0.8rem 0.35rem 0.65rem;
-    border-radius: 999px;
-    background: var(--paper-2);
+    gap: 0.55rem;
     font-size: var(--step--1);
     color: var(--ink-2);
   }
-  .dot {
-    width: 0.45rem;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--accent);
+  .dot { width: 0.45rem; aspect-ratio: 1; border-radius: 50%; background: var(--accent); }
+  h1 { font-size: var(--step-4); margin-block: 0.9rem 0.9rem; }
+  .lede { color: var(--ink-2); font-size: var(--step-1); max-width: 46ch; }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+    font-size: var(--step--1);
   }
-
-  h1 {
-    font-size: var(--step-4);
-    margin-block: 1.4rem;
-    max-width: 15ch;
-  }
-  .lede {
-    color: var(--ink-2);
-    font-size: var(--step-1);
-    line-height: 1.6;
-    max-width: 40ch;
-  }
-  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; }
-
-  /* The collage sits in a quiet panel with a faint wash of the accent. */
-  .collage {
-    position: relative;
-    overflow: clip;
-    padding: clamp(1rem, 4%, 2.5rem);
-    background:
-      radial-gradient(120% 90% at 85% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%),
-      var(--paper-2);
-  }
-  .stack {
-    position: relative;
-    aspect-ratio: 1.12;
-    container-type: inline-size;
-  }
-  .stack :global(.c-screen) { position: absolute; inset: 4% 0 auto 6%; width: 94cqi; }
-  .stack :global(.c-phone-a) { position: absolute; left: 0; bottom: 0; width: 29cqi; }
-  .stack :global(.c-phone-b) { position: absolute; right: 5%; bottom: 4%; width: 26cqi; }
 </style>

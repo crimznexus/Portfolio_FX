@@ -50,7 +50,7 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     </header>
 
     <div class="wrap">
-      <figure class:list={['cover stage', p.cover.kind]}>
+      <figure class:list={['cover', p.cover.kind]}>
         <Shot shot={p.cover} sizes="(width < 60rem) 92vw, 70rem" eager />
       </figure>
     </div>
@@ -197,15 +197,11 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
 
   .cover {
     margin: 0;
-    background:
-      radial-gradient(90% 80% at 85% 0%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 60%),
-      var(--paper-2);
-    padding: clamp(1rem, 5vw, 4.5rem);
     display: grid;
-    place-items: center;
+    place-items: start;
   }
   .cover :global(.frame) { width: 100%; max-width: 68rem; }
-  .cover.phone :global(.frame) { width: min(22rem, 70%); }
+  .cover.phone :global(.frame) { width: min(20rem, 70%); }
 
   .body { display: grid; gap: clamp(3rem, 7vw, 5.5rem); padding-block: clamp(3rem, 8vw, 6rem); }
   .block {
@@ -268,9 +264,7 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
   .open {
     display: block;
     width: 100%;
-    padding: clamp(0.75rem, 3%, 1.5rem);
-    background: var(--paper-2);
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     cursor: zoom-in;
     text-align: start;
   }

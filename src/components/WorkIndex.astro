@@ -1,119 +1,127 @@
 ---
 import Shot from './Shot.astro';
 import { projects } from '../data/projects';
+
+// Which gallery screens appear on the home page, in order.
+const pick: Record<string, number[]> = {
+  milksage: [0, 1],
+  grainova: [0, 1, 2, 3],
+  delphi: [0, 1],
+  nexushost: [0, 1],
+  kiwami: [0, 1],
+};
+
+// Tallest a row may get on wide screens; the row's width is capped so it never exceeds this.
+const MAX_ROW_HEIGHT = 34; // rem
 ---
 
-<section id="work" class="work wrap" aria-labelledby="work-title">
-  <div class="section-head">
-    <h2 id="work-title">Selected work</h2>
-    <p class="label">{projects.length} projects · web, mobile, desktop</p>
-  </div>
-
-  <ol class="grid" role="list">
-    {
-      projects.map((p, i) => (
-        <li class:list={['card', { feature: i === 0 }]}>
-          <a href={`/work/${p.slug}`}>
-            <div class:list={['media', p.cover.kind]}>
-              <Shot
-                shot={p.cover}
-                sizes={i === 0 ? '(width < 52rem) 90vw, 46rem' : p.cover.kind === 'phone' ? '14rem' : '(width < 52rem) 80vw, 30rem'}
-                eager={i === 0}
-              />
-            </div>
-            <div class="info">
-              <p class="label">{p.platform}</p>
-              <h3 data-vt={p.slug}>{p.name}</h3>
+<section id="work" class="work wrap" aria-label="Projects">
+  {
+    projects.map((p) => {
+      const shots = (pick[p.slug] ?? [0]).map((i) => p.gallery[i]).filter(Boolean);
+      const ratios = shots.map((s) => s.src.width / s.src.height);
+      const total = ratios.reduce((a, b) => a + b, 0);
+      return (
+        <article class="project" aria-labelledby={`t-${p.slug}`}>
+          <header class="head">
+            <div>
+              <h2 id={`t-${p.slug}`} data-vt={p.slug}>{p.name}</h2>
               <p class="summary">{p.summary}</p>
-              <span class="more">View project <span aria-hidden="true">→</span></span>
             </div>
+            <div class="side">
+              <p class="label">{p.platform} · {p.year}</p>
+              <a class="more" href={`/work/${p.slug}`}>
+                Case study <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </header>
+
+          {/* Justified row: each screen's flex-grow is its aspect ratio, so every image in the
+              row lands at the same height and none of them is cropped. */}
+          <a
+            class="row"
+            href={`/work/${p.slug}`}
+            aria-label={`${p.name} case study`}
+            style={`--row-max: calc(${MAX_ROW_HEIGHT}rem * ${total.toFixed(4)})`}
+          >
+            {shots.map((s, i) => (
+              <div class="cell" style={`--r: ${ratios[i].toFixed(4)}`}>
+                <Shot shot={s} sizes={`(width < 48rem) ${s.kind === 'phone' ? '12rem' : '80vw'}, ${Math.round((ratios[i] / total) * 76)}rem`} />
+              </div>
+            ))}
           </a>
-        </li>
-      ))
-    }
-  </ol>
+        </article>
+      );
+    })
+  }
 </section>
 
 <style>
-  .work { padding-block: clamp(1rem, 3vw, 2rem) 0; }
+  .work { display: grid; gap: clamp(4rem, 9vw, 7rem); }
+  .project { min-width: 0; }
 
-  /* Two columns; each card spans two subgrid rows (image, text) so the text
-     blocks of neighbouring cards start on the same line. */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 3vw, 2.5rem);
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
   }
-  .card {
-    display: grid;
-    grid-row: span 2;
-    grid-template-rows: subgrid;
-    grid-template-columns: minmax(0, 1fr);
-    min-width: 0;
-  }
-  .card > a {
-    display: grid;
-    grid-row: span 2;
-    grid-template-rows: subgrid;
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 1.25rem;
-    text-decoration: none;
-  }
-
-  .media {
-    display: grid;
-    place-items: end center;
-    aspect-ratio: 16 / 11;
-    padding: 9% 9% 0;
-    overflow: clip;
-    border-radius: var(--radius);
-    background: var(--paper-2);
-    transition: background-color 0.3s;
-    min-width: 0;
-    /* Hold the 16:11 box even when a tall phone capture is inside; it peeks out of the bottom edge. */
-    min-height: 0;
-    align-self: start;
-  }
-  .media :global(.frame) {
-    width: 100%;
-    border-end-start-radius: 0;
-    border-end-end-radius: 0;
-    transition: translate 0.45s var(--ease-out);
-  }
-  .media.phone { padding-top: 7%; }
-  .media.phone :global(.frame) { width: min(42%, 15rem); border-bottom: 0; }
-
-  .info { display: grid; gap: 0.45rem; align-content: start; }
-  h3 { font-size: var(--step-2); }
-  .summary { color: var(--ink-2); max-width: 44ch; }
+  h2 { font-size: var(--step-3); width: fit-content; }
+  .summary { color: var(--ink-2); margin-top: 0.4rem; max-width: 52ch; }
+  .side { display: grid; gap: 0.4rem; justify-items: end; text-align: right; }
   .more {
-    margin-top: 0.4rem;
     font-size: var(--step--1);
-    color: var(--ink-2);
+    text-decoration: none;
+    color: var(--ink);
     display: inline-flex;
     gap: 0.4rem;
+    &:hover { color: var(--accent); }
+    & span { transition: translate 0.25s var(--ease-out); }
+    &:hover span { translate: 3px 0; }
   }
-  .more span { transition: translate 0.25s var(--ease-out); }
-
-  a:hover .media, a:focus-visible .media { background: var(--paper-3); }
-  a:hover .media :global(.frame) { translate: 0 -6px; }
-  a:hover .more { color: var(--accent); }
-  a:hover .more span { translate: 3px 0; }
-
-  /* First project: a wide card with the text beside the image. */
-  .feature { grid-column: 1 / -1; grid-row: auto; grid-template-rows: none; }
-  .feature > a {
-    grid-row: auto;
-    grid-template-rows: none;
-    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(1.5rem, 4vw, 3.5rem);
+  @media (width < 40rem) {
+    .side { justify-items: start; text-align: left; }
   }
-  .feature h3 { font-size: var(--step-3); }
-  .feature .media { aspect-ratio: 16 / 10; }
 
-  @media (width < 52rem) {
-    .grid { grid-template-columns: 1fr; }
-    .feature > a { grid-template-columns: 1fr; }
+  .row {
+    display: flex;
+    gap: clamp(0.75rem, 1.6vw, 1.25rem);
+    max-width: min(100%, var(--row-max));
+    text-decoration: none;
+  }
+  .cell {
+    flex: var(--r) 1 0;
+    min-width: 0;
+    aspect-ratio: var(--r);
+  }
+  .cell :global(.frame) { height: 100%; transition: translate 0.35s var(--ease-out); }
+  .cell :global(.frame img) { width: 100%; height: 100%; object-fit: contain; }
+  .row:hover .cell :global(.frame) { translate: 0 -4px; }
+  .row:hover .cell:nth-child(2) :global(.frame) { transition-delay: 40ms; }
+  .row:hover .cell:nth-child(3) :global(.frame) { transition-delay: 80ms; }
+  .row:hover .cell:nth-child(4) :global(.frame) { transition-delay: 120ms; }
+
+  /* Narrow screens: the row becomes a swipeable strip at a fixed height. */
+  @media (width < 48rem) {
+    .row {
+      max-width: none;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      scroll-padding-inline: var(--gutter);
+    }
+    .cell {
+      flex: 0 0 auto;
+      height: 24rem;
+      width: auto;
+      scroll-snap-align: start;
+    }
+    .cell :global(.frame) { width: auto; height: 100%; aspect-ratio: var(--r); }
   }
 </style>

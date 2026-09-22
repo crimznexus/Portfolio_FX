@@ -3,7 +3,6 @@ const path = Astro.url.pathname;
 const isHome = path === '/' || path === '/index';
 const nav = [
   { href: '/#work', label: 'Work' },
-  { href: '/#about', label: 'About' },
   { href: '/#contact', label: 'Contact' },
 ];
 ---
@@ -121,7 +120,6 @@ const nav = [
     &:hover { color: var(--ink); }
   }
   @media (width < 36rem) {
-    nav li:has(> a[href='/#about']) { display: none; }
     .name { font-size: 0; gap: 0; }
   }
 

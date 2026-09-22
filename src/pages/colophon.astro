@@ -38,9 +38,9 @@ const features = [
     how: 'Each colour is declared once with both values. The theme menu (Graphite, Paper, or match system) only changes color-scheme. Hover tints and the soft accent washes come from color-mix().',
   },
   {
-    name: 'Subgrid and container queries',
-    where: 'The project cards, the toolkit',
-    how: 'Each card spans two subgrid rows, so the text of neighbouring cards starts on the same line whatever the image. The toolkit and contact panels reflow from their own width.',
+    name: 'Justified image rows',
+    where: 'Every project on the home page',
+    how: 'Each screenshot’s flex-grow is its own aspect ratio, so desktop and phone captures share one row at the same height with nothing cropped. On narrow screens the row turns into a scroll-snap strip.',
   },
   {
     name: 'Cascade layers and native nesting',
