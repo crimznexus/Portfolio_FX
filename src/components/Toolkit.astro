@@ -1,0 +1,102 @@
+---
+const rows = [
+  {
+    n: '01',
+    title: 'Interfaces',
+    body: 'React 19, Next.js, Astro, TanStack Start, React Native and Expo, Tailwind CSS, shadcn/ui.',
+  },
+  {
+    n: '02',
+    title: 'The platform',
+    body: 'TypeScript, modern CSS, view transitions, scroll-driven animation, PWAs and service workers, accessibility.',
+  },
+  {
+    n: '03',
+    title: 'Beyond the browser',
+    body: 'Node.js, Convex, SQLite, Socket.io, Python and PySide6, Kotlin and Android, Docker.',
+  },
+];
+---
+
+<section id="toolkit" class="toolkit wrap screen" aria-labelledby="toolkit-title">
+  <div class="top">
+    <p class="badge" data-reveal data-delay="120">What I work with</p>
+    <p class="intro shadow-text" data-reveal data-delay="220">
+      Five projects, three platforms, one person doing the design and the build.
+    </p>
+  </div>
+
+  <div class="bottom">
+    <div class="left">
+      <h2 id="toolkit-title" class="display" data-reveal data-delay="180">
+        Built, shipped,<br />and documented.
+      </h2>
+      <p class="body" data-reveal data-delay="320">
+        Every project here runs on a real device or a real machine. The case studies cover what each
+        one does, the decisions worth mentioning, and how the screenshots were captured.
+      </p>
+      <div class="ctas" data-reveal data-delay="420">
+        <a class="btn" href="#work">
+          See the work
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+        </a>
+        <a class="btn ghost" href="/colophon">How this site is built</a>
+      </div>
+    </div>
+
+    <div class="panel glass">
+      {
+        rows.map((r, i) => (
+          <div class="row" data-reveal data-delay={300 + i * 110}>
+            <p class="n">{r.n}</p>
+            <div>
+              <h3 class="t">{r.title}</h3>
+              <p class="b">{r.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .top { display: flex; flex-direction: column; gap: 2rem; }
+  @media (width >= 40rem) {
+    .top { flex-direction: row; justify-content: space-between; align-items: start; }
+    .intro { max-width: 24rem; text-align: right; }
+  }
+  .intro { font-size: var(--step-2); line-height: 1.6; }
+
+  .bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  @media (width >= 48rem) {
+    .bottom { flex-direction: row; align-items: end; justify-content: space-between; gap: 4rem; }
+    .left { max-width: 34rem; }
+  }
+  h2.display { font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.25rem); }
+  .body { margin-top: 1.25rem; max-width: 28rem; color: var(--ink-80); font-size: var(--step-1); }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+
+  .panel {
+    width: 100%;
+    max-width: 28rem;
+    border-radius: 16px;
+    padding-inline: clamp(1.25rem, 3vw, 1.5rem);
+  }
+  .row {
+    display: flex;
+    gap: 1.25rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .row:last-child { border-bottom: 0; }
+  .n { font-size: var(--step--1); letter-spacing: 0.15em; color: var(--ink-55); }
+  .t { font-size: var(--step-2); font-weight: 500; }
+  .b { margin-top: 0.375rem; font-size: var(--step-0); line-height: 1.6; color: var(--ink-70); }
+</style>

@@ -23,14 +23,14 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
 <Base title={p.name} description={p.summary}>
   <div class="progress" aria-hidden="true"></div>
 
-  <article class="case" style={`--brand:${p.brand}`}>
+  <article class="case">
     <header class="case-head wrap">
-      <a class="back label" href="/#work">← All work</a>
-      <p class="label kicker">{p.platform} · {p.year}</p>
-      <h1 data-vt={p.slug}>{p.name}</h1>
-      <p class="summary">{p.summary}</p>
+      <a class="back label" href="/#work" data-reveal>← All work</a>
+      <p class="label kicker" data-reveal data-delay="80">{p.platform} · {p.year}</p>
+      <h1 class="display" data-vt={p.slug} data-reveal data-delay="160">{p.name}</h1>
+      <p class="summary shadow-text" data-reveal data-delay="240">{p.summary}</p>
 
-      <dl class="facts">
+      <dl class="facts" data-reveal data-delay="320">
         <div><dt class="label">Role</dt><dd>{p.role}</dd></div>
         <div><dt class="label">Status</dt><dd>{p.status}</dd></div>
         <div class="stack"><dt class="label">Built with</dt><dd>{p.stack.join(' · ')}</dd></div>
@@ -50,32 +50,32 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     </header>
 
     <div class="wrap">
-      <figure class:list={['cover', p.cover.kind]}>
-        <Shot shot={p.cover} sizes="(width < 60rem) 92vw, 70rem" eager />
+      <figure class:list={['cover', p.cover.kind]} data-reveal>
+        <Shot shot={p.cover} sizes="(width < 60rem) 92vw, 64rem" eager />
       </figure>
     </div>
 
     <div class="wrap body">
       <section class="block" aria-labelledby="s-context">
-        <h2 id="s-context">Context</h2>
-        <div class="prose lead">
+        <h2 id="s-context" data-reveal>Context</h2>
+        <div class="prose" data-reveal data-delay="100">
           {p.intro.map((para) => <p>{para}</p>)}
         </div>
       </section>
 
       <section class="block" aria-labelledby="s-built">
-        <h2 id="s-built">What I built</h2>
-        <ul class="built" role="list">
+        <h2 id="s-built" data-reveal>What I built</h2>
+        <ul class="built" role="list" data-reveal data-delay="100">
           {p.built.map((item) => <li>{item}</li>)}
         </ul>
       </section>
 
       <section class="block" aria-labelledby="s-decisions">
-        <h2 id="s-decisions">Decisions worth mentioning</h2>
+        <h2 id="s-decisions" data-reveal>Decisions worth mentioning</h2>
         <div class="decisions">
           {
-            p.decisions.map((d) => (
-              <div class="decision">
+            p.decisions.map((d, i) => (
+              <div class="decision glass" data-reveal data-delay={100 + i * 110}>
                 <h3>{d.title}</h3>
                 <p>{d.body}</p>
               </div>
@@ -86,14 +86,14 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     </div>
 
     <section class="gallery-wrap wrap" aria-labelledby="s-gallery">
-      <div class="gallery-head">
+      <div class="gallery-head" data-reveal>
         <h2 id="s-gallery">Screens</h2>
         <p class="label">{p.captureNote}</p>
       </div>
       <ul class:list={['gallery', galleryMode]} role="list">
         {
           p.gallery.map((g, i) => (
-            <li class:list={[g.kind]}>
+            <li class:list={[g.kind]} data-reveal data-delay={Math.min(i, 3) * 90}>
               <button
                 class="open"
                 type="button"
@@ -101,7 +101,7 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
                 command="show-modal"
                 aria-label={`Enlarge: ${g.caption ?? g.alt}`}
               >
-                <Shot shot={g} sizes={g.kind === 'phone' ? '(width < 48rem) 45vw, 18rem' : '(width < 48rem) 92vw, 44rem'} />
+                <Shot shot={g} sizes={g.kind === 'phone' ? '(width < 48rem) 45vw, 16rem' : '(width < 48rem) 92vw, 40rem'} />
               </button>
               {g.caption && <p class="label cap">{g.caption}</p>}
               <dialog id={`lb-${i}`} class="lightbox" closedby="any" aria-label={g.caption ?? g.alt}>
@@ -117,7 +117,7 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     </section>
 
     <nav class="next wrap" aria-label="Next project">
-      <a href={`/work/${next.slug}`}>
+      <a class="glass" href={`/work/${next.slug}`} data-reveal>
         <span class="label">Next project</span>
         <span class="next-name" data-vt={next.slug}>{next.name}</span>
         <span class="next-sum">{next.summary}</span>
@@ -127,8 +127,7 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
 </Base>
 
 <script>
-  // Invoker Commands (commandfor/command) open the dialogs natively where supported.
-  // This is the fallback for browsers that don't have it yet.
+  // Invoker Commands open the dialogs natively where supported; these cover the rest.
   if (!('command' in HTMLButtonElement.prototype)) {
     document.querySelectorAll<HTMLButtonElement>('button[commandfor]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -137,7 +136,6 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
       });
     });
   }
-  // Same for closedby="any": close when the backdrop is clicked.
   if (!('closedBy' in HTMLDialogElement.prototype)) {
     document.querySelectorAll<HTMLDialogElement>('dialog.lightbox').forEach((d) => {
       d.addEventListener('click', (e) => {
@@ -148,15 +146,15 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
 </script>
 
 <style>
-  /* Reading progress: a scroll-driven animation on the root scroller, no scroll listeners. */
+  /* Reading progress, driven by the scroll timeline rather than a listener. */
   .progress {
     position: fixed;
     inset: 0 0 auto;
     height: 2px;
-    background: var(--accent);
+    background: var(--ink);
     transform-origin: 0 50%;
     scale: 0 1;
-    z-index: 30;
+    z-index: 60;
   }
   @supports (animation-timeline: scroll()) {
     .progress { animation: grow linear both; animation-timeline: scroll(root); }
@@ -164,72 +162,70 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
   }
   @supports not (animation-timeline: scroll()) { .progress { display: none; } }
 
-  .case-head { padding-block: clamp(2rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem); }
-  .back { text-decoration: none; display: inline-block; margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
-  .back:hover { color: var(--accent); }
-  h1 {
-    font-size: var(--step-4);
-    line-height: 1.02;
-    margin-top: 0.75rem;
-    width: fit-content;
-  }
+  .case-head { padding-block: 7rem 2.5rem; }
+  .back { display: inline-block; margin-bottom: 2.5rem; }
+  .back:hover { color: var(--ink); }
+  .kicker { margin-bottom: 0.75rem; }
+  h1 { width: fit-content; }
   .summary {
-    font-size: var(--step-1);
-    line-height: 1.5;
-    max-width: 40ch;
     margin-top: 1.25rem;
-    color: var(--ink-2);
-    text-wrap: balance;
+    max-width: 44ch;
+    font-size: var(--step-2);
+    line-height: 1.6;
+    color: var(--ink-80);
   }
   .facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
     gap: 1.25rem 2rem;
-    margin-top: clamp(2rem, 4vw, 3rem);
-    padding-top: 1.25rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--line);
   }
-  .facts div { display: grid; gap: 0.3rem; align-content: start; }
+  .facts div { display: grid; gap: 0.35rem; align-content: start; }
   .facts .stack { grid-column: span 2; }
   @media (width < 40rem) { .facts .stack { grid-column: auto; } }
-  .facts dd { margin: 0; font-size: var(--step--1); }
-  .facts dd a { display: block; }
+  .facts dd { margin: 0; font-size: var(--step-0); }
+  .facts dd a { display: block; border-bottom: 1px solid var(--line-strong); width: fit-content; }
 
-  .cover {
-    margin: 0;
-    display: grid;
-    place-items: start;
+  .cover { margin: 0; display: grid; place-items: start; }
+  .cover :global(.frame) {
+    width: 100%;
+    max-width: 64rem;
+    border-radius: 12px;
+    overflow: clip;
+    border: 1px solid var(--line);
+    box-shadow: 0 40px 90px -40px rgb(0 0 0 / 0.9);
   }
-  .cover :global(.frame) { width: 100%; max-width: 68rem; }
   .cover.phone :global(.frame) { width: min(20rem, 70%); }
 
-  .body { display: grid; gap: clamp(3rem, 7vw, 5.5rem); padding-block: clamp(3rem, 8vw, 6rem); }
+  .body { display: grid; gap: clamp(3rem, 7vw, 5rem); padding-block: clamp(3.5rem, 8vw, 6rem); }
   .block {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
-    gap: clamp(1rem, 4vw, 4rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+    gap: clamp(1rem, 4vw, 3.5rem);
   }
   @media (width < 52rem) { .block { grid-template-columns: 1fr; } }
-  .block h2 { font-size: var(--step-2); }
-  .lead { font-size: var(--step-1); line-height: 1.55; }
-  .lead p + p { color: var(--ink-2); }
+  .block h2 { font-size: var(--step-3); }
+  .prose { display: grid; gap: 1rem; max-width: 60ch; font-size: var(--step-2); line-height: 1.65; }
+  .prose p + p { color: var(--ink-70); }
 
-  .built { display: grid; gap: 0; max-width: 62ch; }
+  .built { display: grid; max-width: 62ch; }
   .built li {
-    padding-block: 0.8rem;
-    border-bottom: 1px solid var(--line);
-    padding-left: 1.5rem;
     position: relative;
+    padding: 0.85rem 0 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-80);
   }
   .built li:first-child { border-top: 1px solid var(--line); }
   .built li::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 1.45rem;
+    top: 1.5rem;
     width: 0.6rem;
     height: 1px;
-    background: var(--accent);
+    background: var(--ink-40);
   }
 
   .decisions {
@@ -237,11 +233,10 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
     gap: 0.75rem;
   }
-  .decision { display: grid; gap: 0.6rem; align-content: start; padding: 1.4rem 1.5rem 1.6rem; border-radius: var(--radius); background: var(--paper-2); }
-  .decision h3 { font-size: var(--step-1); }
-  .decision p { color: var(--ink-2); font-size: var(--step--1); line-height: 1.65; }
+  .decision { border-radius: 14px; padding: 1.35rem 1.5rem 1.6rem; display: grid; gap: 0.6rem; align-content: start; }
+  .decision h3 { font-size: var(--step-2); font-weight: 500; }
+  .decision p { font-size: var(--step-0); line-height: 1.65; color: var(--ink-70); }
 
-  .gallery-wrap { padding-block: 1rem 0; }
   .gallery-head {
     display: flex;
     flex-wrap: wrap;
@@ -251,41 +246,27 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
   }
   .gallery-head h2 { font-size: var(--step-3); }
-
   .gallery {
     display: grid;
-    gap: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
-    grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+    gap: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2.5vw, 1.75rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
     align-items: start;
   }
-  .gallery.phones { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 42%), 1fr)); }
-  .gallery.mixed li.phone { max-width: 16rem; }
+  .gallery.phones { grid-template-columns: repeat(auto-fill, minmax(min(12rem, 42%), 1fr)); }
+  .gallery.mixed li.phone { max-width: 15rem; }
   .gallery li { display: grid; gap: 0.6rem; }
-  .open {
-    display: block;
-    width: 100%;
-    border-radius: var(--radius-sm);
-    cursor: zoom-in;
-    text-align: start;
+  .open { display: block; width: 100%; cursor: zoom-in; text-align: start; }
+  .open :global(.frame) {
+    border-radius: 10px;
+    overflow: clip;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 70px -30px rgb(0 0 0 / 0.85);
+    transition: translate 0.35s var(--ease-out), border-color 0.35s;
   }
-  .open:hover :global(.frame) { translate: 0 -3px; }
-  .open :global(.frame) { transition: translate 0.3s var(--ease-out); }
-
-  /* Screens drift up slightly as they enter the viewport. Opacity is never touched,
-     so the resting state is always fully visible. */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .gallery li {
-        animation: lift linear both;
-        animation-timeline: view();
-        animation-range: entry 0% entry 70%;
-      }
-      @keyframes lift { from { translate: 0 1rem; } }
-    }
-  }
+  .open:hover :global(.frame) { translate: 0 -4px; border-color: var(--line-strong); }
 
   .lightbox {
-    max-width: min(92vw, 90rem);
+    max-width: min(92vw, 88rem);
     max-height: 92dvh;
     padding: 0;
     border: 0;
@@ -298,38 +279,33 @@ const galleryMode = phones === p.gallery.length ? 'phones' : 'mixed';
     &:not([open]) { opacity: 0; scale: 0.97; }
     @starting-style { &[open] { opacity: 0; scale: 0.97; } }
     &::backdrop {
-      background: rgb(12 12 10 / 0.88);
-      backdrop-filter: blur(6px);
+      background: rgb(6 6 6 / 0.9);
+      backdrop-filter: blur(8px);
       transition: opacity 0.25s, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
     }
     &:not([open])::backdrop { opacity: 0; }
     @starting-style { &[open]::backdrop { opacity: 0; } }
   }
-  .lightbox :global(.frame) { max-height: 86dvh; width: auto; }
-  .lightbox :global(.frame img) { max-height: calc(86dvh - 8px); width: auto; margin-inline: auto; }
+  .lightbox :global(.frame) { max-height: 86dvh; width: auto; border-radius: 10px; overflow: clip; }
+  .lightbox :global(.frame img) { max-height: 86dvh; width: auto; margin-inline: auto; }
   .lightbox form { text-align: center; margin-top: 0.75rem; }
-  .close { color: #ece8df; padding: 0.4rem 0.8rem; }
+  .close { padding: 0.4rem 0.8rem; color: var(--ink-70); }
+  .close:hover { color: var(--ink); }
 
-  .next { margin-top: clamp(5rem, 12vw, 9rem); }
+  .next { margin-top: clamp(4rem, 10vw, 7rem); }
   .next a {
     display: grid;
     gap: 0.5rem;
-    padding: clamp(1.75rem, 5vw, 3.5rem);
-    border-radius: var(--radius);
-    background: var(--paper-2);
-    text-decoration: none;
-    transition: background-color 0.25s;
+    border-radius: 16px;
+    padding: clamp(1.75rem, 5vw, 3rem);
+    transition: background-color 0.3s, border-color 0.3s;
   }
-  .next a:hover { background: var(--paper-3); }
+  .next a:hover { background: rgb(255 255 255 / 0.16); border-color: var(--line-strong); }
   .next-name {
-    font-family: var(--font-display-stack);
-    font-size: var(--step-4);
-    font-weight: 500;
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+    letter-spacing: -0.03em;
     line-height: 1.05;
-    letter-spacing: -0.025em;
     width: fit-content;
-    transition: color 0.25s;
   }
-  .next a:hover .next-name { color: var(--accent); }
-  .next-sum { color: var(--ink-2); max-width: 50ch; }
+  .next-sum { color: var(--ink-70); max-width: 50ch; font-size: var(--step-0); }
 </style>

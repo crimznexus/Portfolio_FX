@@ -2,11 +2,16 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import WorkIndex from '../components/WorkIndex.astro';
+import Toolkit from '../components/Toolkit.astro';
 import Contact from '../components/Contact.astro';
 ---
 
 <Base>
   <Hero />
+  {/* Scroll room so the backdrop has time to move between frames. */}
+  <div class="spacer" aria-hidden="true"></div>
   <WorkIndex />
+  <div class="spacer" aria-hidden="true"></div>
+  <Toolkit />
   <Contact />
 </Base>

@@ -13,27 +13,11 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Bricolage Grotesque',
-      cssVariable: '--font-display',
-      weights: ['400 700'],
+      name: 'Inter',
+      cssVariable: '--font-sans',
+      weights: [400, 500, 600, 700],
       styles: ['normal'],
       fallbacks: ['system-ui', 'sans-serif'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Hanken Grotesk',
-      cssVariable: '--font-body',
-      weights: ['300 700'],
-      styles: ['normal'],
-      fallbacks: ['system-ui', 'sans-serif'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'IBM Plex Mono',
-      cssVariable: '--font-mono',
-      weights: [400, 500],
-      styles: ['normal'],
-      fallbacks: ['ui-monospace', 'monospace'],
     },
   ],
 });

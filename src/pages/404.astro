@@ -4,14 +4,20 @@ import Base from '../layouts/Base.astro';
 
 <Base title="Not found">
   <section class="wrap nf">
-    <p class="label">404</p>
-    <h1>This page isn’t here.</h1>
-    <p>It may have moved, or the link had a typo. <a href="/">Go to the home page</a> or <a href="/#work">see the work</a>.</p>
+    <p class="badge" data-reveal>404</p>
+    <h1 class="display" data-reveal data-delay="100">This page isn’t here.</h1>
+    <p class="sub" data-reveal data-delay="200">
+      It may have moved, or the link had a typo.
+    </p>
+    <div class="ctas" data-reveal data-delay="300">
+      <a class="btn" href="/">Home</a>
+      <a class="btn ghost" href="/#work">See the work</a>
+    </div>
   </section>
 </Base>
 
 <style>
-  .nf { padding-block: clamp(5rem, 14vw, 10rem) 0; display: grid; gap: 1.25rem; }
-  h1 { font-size: var(--step-4); }
-  p:last-child { color: var(--ink-2); font-size: var(--step-1); }
+  .nf { padding-block: 9rem 0; display: grid; gap: 1.25rem; justify-items: start; }
+  .sub { color: var(--ink-70); font-size: var(--step-2); }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
 </style>

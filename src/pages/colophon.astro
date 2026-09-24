@@ -3,6 +3,11 @@ import Base from '../layouts/Base.astro';
 
 const features = [
   {
+    name: 'Scroll-scrubbed backdrop',
+    where: 'Behind every page',
+    how: 'A fixed canvas cross-dissolves through the project screens as you scroll. Scroll position is smoothed with a lerp each frame and drawn with object-cover maths at a capped device pixel ratio, then blurred and dimmed in CSS so it stays behind the words.',
+  },
+  {
     name: 'Cross-document view transitions',
     where: 'Moving between the index and a project',
     how: '@view-transition { navigation: auto } turns on page-to-page transitions. The pageswap and pagereveal events name only the project you open, so its title glides into place and nothing else moves. No client-side router.',
@@ -13,29 +18,29 @@ const features = [
     how: 'Project pages are prerendered when you show intent (hover or focus), so the transition usually starts instantly.',
   },
   {
-    name: 'CSS anchor positioning',
-    where: 'The theme menu and the "Copied" toast',
-    how: 'anchor-name and position-area pin each popover to its button; position-try-fallbacks flips the menu when there is no room below.',
+    name: 'Scroll-driven animations',
+    where: 'The reading bar on project pages',
+    how: 'animation-timeline: scroll() replaces the usual scroll listener, so the bar tracks reading without any JavaScript.',
   },
   {
-    name: 'Scroll-driven animations',
-    where: 'The header, the reading bar and screenshots on project pages',
-    how: 'animation-timeline: scroll() and view() replace scroll listeners: the header’s hairline fades in as you scroll, and the progress bar tracks reading. Nothing is hidden waiting for an animation.',
+    name: 'Staggered reveals',
+    where: 'Every block of text and every screen',
+    how: 'One IntersectionObserver at a 0.15 threshold adds a class; CSS handles the 700ms fade-up and each element’s own delay. Everything is visible immediately when reduced motion is requested.',
+  },
+  {
+    name: 'CSS anchor positioning',
+    where: 'The “Copied” toast',
+    how: 'anchor-name and position-area pin the popover above its button, with a fixed-position fallback for browsers that lack it.',
   },
   {
     name: 'Popover API, <dialog> and @starting-style',
-    where: 'Theme menu, toast, image lightbox',
+    where: 'The toast and the image lightbox',
     how: 'Top-layer elements with native light dismiss and focus handling. @starting-style and transition-behavior: allow-discrete animate them in and out of display: none.',
   },
   {
     name: 'Invoker Commands and closedby',
     where: 'Opening a screenshot',
     how: 'Buttons open their dialog with commandfor and command="show-modal"; closedby="any" closes it from the backdrop. A few lines of script cover browsers that don’t have these yet.',
-  },
-  {
-    name: 'light-dark() and color-mix()',
-    where: 'Every colour',
-    how: 'Each colour is declared once with both values. The theme menu (Graphite, Paper, or match system) only changes color-scheme. Hover tints and the soft accent washes come from color-mix().',
   },
   {
     name: 'Justified image rows',
@@ -45,45 +50,45 @@ const features = [
   {
     name: 'Cascade layers and native nesting',
     where: 'The whole stylesheet',
-    how: '@layer keeps reset, tokens, components and motion in a predictable order. No preprocessor.',
+    how: '@layer keeps reset, tokens, base, layout, glass and motion in a predictable order. No preprocessor, no utility framework.',
   },
 ];
 ---
 
 <Base title="How this site is built" description="The platform features behind this portfolio, and where each one is used.">
   <article class="wrap colophon">
-    <p class="label">Colophon</p>
-    <h1>How this site is built</h1>
-    <div class="intro prose">
+    <p class="badge" data-reveal>Colophon</p>
+    <h1 class="display" data-reveal data-delay="100">How this site is built</h1>
+    <div class="intro" data-reveal data-delay="200">
       <p>
-        A portfolio is a frontend project too, so I built this one to use what the web platform can
-        do now, rather than reaching for a library each time.
+        A portfolio is a frontend project too, so this one is built out of what the web platform can
+        do now rather than a library for each effect.
       </p>
       <p>
         It’s a static <a href="https://astro.build">Astro</a> site with no client-side framework. The
-        only JavaScript is the theme switch, the copy button and a couple of fallbacks. Fonts
-        (Bricolage Grotesque, Hanken Grotesk, IBM Plex Mono) are self-hosted at build time, and every
-        screenshot is served as WebP at the size your screen needs.
+        JavaScript is the scrolling backdrop, one IntersectionObserver, the copy button and two small
+        fallbacks. Inter is self-hosted at build time, and every screenshot is served as WebP at the
+        size your screen needs.
       </p>
       <p>
-        Every feature is progressive. In a browser that lacks one, the page still works and simply
-        does a little less.
+        Every feature degrades: in a browser missing one, the page still works and simply does a
+        little less.
       </p>
     </div>
 
     <ul class="features" role="list">
       {
-        features.map((f) => (
-          <li>
+        features.map((f, i) => (
+          <li data-reveal data-delay={Math.min(i, 4) * 80}>
             <h2>{f.name}</h2>
             <p class="label">{f.where}</p>
-            <p>{f.how}</p>
+            <p class="how">{f.how}</p>
           </li>
         ))
       }
     </ul>
 
-    <p class="source label">
+    <p class="source label" data-reveal>
       Screenshots were captured by running each project locally: in a browser, on an Android
       emulator, or rendered straight from the desktop app’s window.
     </p>
@@ -91,10 +96,11 @@ const features = [
 </Base>
 
 <style>
-  .colophon { padding-block: clamp(3rem, 7vw, 6rem) 0; }
-  h1 { font-size: var(--step-4); margin-block: 0.75rem 1.5rem; }
-  .intro { font-size: var(--step-1); line-height: 1.55; }
-  .intro p + p { color: var(--ink-2); }
+  .colophon { padding-block: 7rem 0; }
+  h1 { margin-block: 1rem 1.75rem; max-width: 18ch; }
+  .intro { display: grid; gap: 1rem; max-width: 60ch; font-size: var(--step-2); line-height: 1.65; }
+  .intro p + p { color: var(--ink-70); }
+  .intro a { border-bottom: 1px solid var(--line-strong); }
   .features {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
@@ -108,7 +114,7 @@ const features = [
     padding-block: 1.5rem;
     border-top: 1px solid var(--line);
   }
-  .features h2 { font-size: var(--step-1); font-weight: 600; }
-  .features p:last-child { color: var(--ink-2); font-size: var(--step--1); line-height: 1.65; }
+  .features h2 { font-size: var(--step-2); font-weight: 500; }
+  .how { color: var(--ink-70); font-size: var(--step-0); line-height: 1.65; }
   .source { margin-top: 3rem; max-width: 60ch; }
 </style>

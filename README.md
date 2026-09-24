@@ -1,6 +1,6 @@
 # Muhammad Faizan — portfolio
 
-Static portfolio site built with Astro 7. No client-side framework; the only JavaScript is the theme switch, the copy-email button and small fallbacks for newer platform features.
+Static portfolio site built with Astro 7. No client-side framework; the JavaScript is the scroll-scrubbed backdrop, one IntersectionObserver for reveals, the copy-email button and two small fallbacks.
 
 ## Run it
 
@@ -18,11 +18,12 @@ npm run preview
 | `src/data/projects.ts` | All project copy, screenshots and case-study content |
 | `src/data/contact.ts` | Email and social links |
 | `src/assets/shots/` | Source screenshots (Astro generates responsive WebP at build time) |
-| `src/styles/global.css` | Tokens (`light-dark()` + OKLCH), layers, view transitions |
+| `src/styles/global.css` | Tokens, cascade layers, glass system, reveals, view transitions |
+| `src/components/ScrollBackdrop.astro` | Fixed canvas that scrubs through the project screens |
 | `src/pages/work/[slug].astro` | Case-study template |
 | `src/pages/colophon.astro` | "How this site is built" |
 
-To add a project, add an entry to `projects` in `src/data/projects.ts` and drop its screenshots in `src/assets/shots/`. If the list grows past five, extend the per-row preview rules at the bottom of `src/components/WorkIndex.astro`.
+To add a project, add an entry to `projects` in `src/data/projects.ts` and drop its screenshots in `src/assets/shots/`. Then add its slug to `pick` in `src/components/WorkIndex.astro` to choose which screens show on the home page.
 
 ## Deploy
 

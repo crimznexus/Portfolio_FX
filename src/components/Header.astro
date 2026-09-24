@@ -1,165 +1,82 @@
 ---
-const path = Astro.url.pathname;
-const isHome = path === '/' || path === '/index';
+import { contact } from '../data/contact';
+import { projects } from '../data/projects';
+
 const nav = [
-  { href: '/#work', label: 'Work' },
+  { href: '/#work', label: 'Work', sup: String(projects.length) },
+  { href: '/#toolkit', label: 'Toolkit' },
+  { href: '/colophon', label: 'Colophon' },
   { href: '/#contact', label: 'Contact' },
 ];
 ---
 
 <header class="site-header">
   <div class="wrap bar">
-    <a class="name" href="/" aria-current={isHome ? 'page' : undefined}>
-      <span class="mark" aria-hidden="true">MF</span>
-      Muhammad Faizan
+    <a class="logo" href="/" data-reveal data-delay="0">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7z"></path>
+      </svg>
+      <span>Muhammad&nbsp;Faizan</span>
     </a>
 
     <nav aria-label="Main">
       <ul role="list">
-        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-        <li>
-          <button class="theme-btn" popovertarget="theme-menu" aria-label="Choose colour theme">
-            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
-              <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
-              <path d="M10 2.75a7.25 7.25 0 0 1 0 14.5Z" fill="currentColor"></path>
-            </svg>
-          </button>
-          <div id="theme-menu" popover>
-            <fieldset>
-              <legend class="label">Theme</legend>
-              <label><input type="radio" name="theme" value="dark" checked /> Graphite</label>
-              <label><input type="radio" name="theme" value="light" /> Paper</label>
-              <label><input type="radio" name="theme" value="system" /> Match system</label>
-            </fieldset>
-          </div>
-        </li>
+        {
+          nav.map((item, i) => (
+            <li data-reveal data-delay={100 + i * 100}>
+              <a href={item.href}>
+                {item.label}
+                {item.sup && <sup>{item.sup}</sup>}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
+
+    <a class="btn ghost square cta" href={`mailto:${contact.email}`} data-reveal data-delay="500">
+      Email me
+    </a>
   </div>
 </header>
 
-<script>
-  const root = document.documentElement;
-  const radios = document.querySelectorAll<HTMLInputElement>('input[name="theme"]');
-  const current = root.dataset.theme ?? 'dark';
-  radios.forEach((r) => {
-    r.checked = r.value === current;
-    r.addEventListener('change', () => {
-      const apply = () => {
-        if (r.value === 'dark') delete root.dataset.theme;
-        else root.dataset.theme = r.value;
-      };
-      // A same-document view transition gives the swap a soft crossfade.
-      if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.startViewTransition(apply);
-      } else apply();
-      try {
-        if (r.value === 'dark') localStorage.removeItem('theme');
-        else localStorage.setItem('theme', r.value);
-      } catch {}
-    });
-  });
-</script>
-
 <style>
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: color-mix(in oklab, var(--paper) 82%, transparent);
-    backdrop-filter: blur(14px) saturate(1.2);
-    border-bottom: 1px solid transparent;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    border-bottom: 1px solid var(--line);
+    background: rgb(10 10 10 / 0.35);
+    backdrop-filter: blur(16px);
+    padding-top: env(safe-area-inset-top, 0px);
   }
-  /* The hairline fades in over the first 120px of scrolling: a scroll-driven animation, no listeners. */
-  @supports (animation-timeline: scroll()) {
-    .site-header {
-      animation: header-line linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 120px;
-    }
-    @keyframes header-line { to { border-bottom-color: var(--line); } }
-  }
-  @supports not (animation-timeline: scroll()) {
-    .site-header { border-bottom-color: var(--line); }
-  }
-
   .bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding-block: 0.9rem;
+    padding-block: 0.85rem;
   }
-  .name {
+  .logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.7rem;
-    font-family: var(--font-display-stack);
-    font-size: var(--step-0);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-decoration: none;
+    gap: 0.6rem;
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
-  .mark {
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    aspect-ratio: 1;
-    border-radius: 9px;
-    background: var(--accent);
-    color: var(--paper);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+  .logo svg { opacity: 0.9; }
+
+  nav { display: none; }
+  @media (width >= 48rem) {
+    nav { display: block; }
+    ul { display: flex; align-items: center; gap: 2rem; }
   }
-  ul { display: flex; align-items: center; gap: clamp(0.9rem, 2.5vw, 2rem); }
+  @media (width >= 64rem) { ul { gap: 2.5rem; } }
   nav a {
-    font-size: var(--step--1);
-    text-decoration: none;
-    color: var(--ink-2);
+    font-size: var(--step-0);
+    color: var(--ink-80);
     &:hover { color: var(--ink); }
   }
-  @media (width < 36rem) {
-    .name { font-size: 0; gap: 0; }
-  }
-
-  .theme-btn {
-    anchor-name: --theme-btn;
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    color: var(--ink-2);
-    transition: color 0.2s, background-color 0.2s;
-    &:hover { color: var(--ink); background: var(--paper-2); }
-  }
-
-  /* Popover placed with CSS anchor positioning; flips if there is no room. */
-  #theme-menu {
-    position-anchor: --theme-btn;
-    position-area: block-end span-inline-start;
-    position-try-fallbacks: flip-block, flip-inline;
-    margin: 0.5rem 0 0;
-    inset: auto;
-    padding: 0.9rem 1rem 1rem;
-    background: var(--paper-2);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    box-shadow: 0 20px 40px -20px rgb(0 0 0 / 0.5);
-    opacity: 1;
-    translate: 0 0;
-    transition: opacity 0.18s, translate 0.18s var(--ease-out), display 0.18s allow-discrete, overlay 0.18s allow-discrete;
-    &:not(:popover-open) { opacity: 0; translate: 0 -4px; }
-    @starting-style {
-      &:popover-open { opacity: 0; translate: 0 -4px; }
-    }
-  }
-  @supports not (position-anchor: --x) {
-    #theme-menu { position: fixed; inset: 4rem var(--gutter) auto auto; }
-  }
-  fieldset { border: 0; padding: 0; display: grid; gap: 0.45rem; min-width: 11rem; }
-  legend { margin-bottom: 0.4rem; }
-  label { display: flex; gap: 0.6rem; align-items: center; font-size: var(--step--1); cursor: pointer; }
+  sup { font-size: var(--step--2); color: var(--ink-60); margin-left: 0.15em; }
 </style>

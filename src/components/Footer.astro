@@ -2,27 +2,28 @@
 import { contact } from '../data/contact';
 ---
 
-<footer class="site-footer wrap">
-  <p>Muhammad Faizan · 2026</p>
-  <ul role="list">
-    <li><a href={contact.github.href}>GitHub</a></li>
-    <li><a href={contact.linkedin.href}>LinkedIn</a></li>
-    <li><a href={contact.telegram.href}>Telegram</a></li>
-    <li><a href="/colophon">How this site is built</a></li>
-  </ul>
+<footer class="site-footer">
+  <div class="wrap row">
+    <p class="label">Muhammad Faizan · 2026</p>
+    <ul role="list">
+      <li><a href={contact.github.href}>GitHub</a></li>
+      <li><a href={contact.linkedin.href}>LinkedIn</a></li>
+      <li><a href={contact.telegram.href}>Telegram</a></li>
+      <li><a href="/colophon">How this site is built</a></li>
+    </ul>
+  </div>
 </footer>
 
 <style>
-  .site-footer {
+  .site-footer { border-top: 1px solid var(--line); margin-top: 6rem; }
+  .row {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.75rem 2rem;
-    padding-block: 2rem 2.5rem;
-    margin-top: clamp(4rem, 10vw, 8rem);
-    background: linear-gradient(var(--line), var(--line)) no-repeat top center / calc(100% - 2 * var(--gutter)) 1px;
-    font-size: var(--step--1);
-    color: var(--ink-2);
+    padding-block: 1.75rem 2.5rem;
   }
   ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  a { font-size: var(--step-0); color: var(--ink-70); }
+  a:hover { color: var(--ink); }
 </style>

@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ScrollBackdrop from '../components/ScrollBackdrop.astro';
 
 interface Props {
   title?: string;
@@ -11,10 +12,10 @@ interface Props {
 
 const {
   title,
-  description = 'Muhammad Faizan, frontend engineer. Work on dairy farms, flour mills, offline study tools, game hosting and Android.',
+  description = 'Muhammad Faizan, frontend engineer. Five projects across web, Android and Windows, shown as they run.',
 } = Astro.props;
 
-const fullTitle = title ? `${title} · Muhammad Faizan` : 'Muhammad Faizan, frontend engineer';
+const fullTitle = title ? `${title} — Muhammad Faizan` : 'Muhammad Faizan — Frontend engineer';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const speculationRules = {
@@ -32,22 +33,13 @@ const speculationRules = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#171815" />
+    <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
 
-    <!-- Apply a saved theme before first paint so there is no flash. -->
-    <script is:inline>
-      try {
-        const t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'system') document.documentElement.dataset.theme = t;
-      } catch {}
-    </script>
-
-    <!-- Only the project being opened (or returned to) morphs between pages.
-         Names are assigned at navigation time so nothing else ghosts across. -->
+    <!-- Only the project being opened (or returned to) morphs between pages. -->
     <script is:inline>
       (() => {
         const slugOf = (u) => new URL(u, location.href).pathname.match(/^\/work\/([^/]+)/)?.[1] ?? null;
@@ -71,33 +63,60 @@ const speculationRules = {
       })();
     </script>
 
-    <Font cssVariable="--font-display" preload={[{ style: 'normal' }]} />
-    <Font cssVariable="--font-body" preload />
-    <Font cssVariable="--font-mono" />
+    <Font cssVariable="--font-sans" preload />
 
     <script type="speculationrules" is:inline set:html={JSON.stringify(speculationRules)} />
     <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <Header />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer />
+    <ScrollBackdrop />
+    <div class="page">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script>
+      // Staggered fade-up as blocks enter the viewport.
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!items.length) {
+        // nothing to do
+      } else if (!('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target as HTMLElement;
+              el.style.setProperty('--delay', `${el.dataset.delay ?? 0}ms`);
+              el.classList.add('is-in');
+              io.unobserve(el);
+            });
+          },
+          { threshold: 0.15 },
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>
 
 <style>
+  .page { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100dvh; }
+  .page > :global(main) { flex: 1; }
   .skip {
     position: absolute;
-    inset-inline-start: var(--gutter);
+    inset-inline-start: var(--gutter-x);
     inset-block-start: 0.5rem;
-    z-index: 10;
+    z-index: 60;
     padding: 0.5rem 0.9rem;
     background: var(--ink);
-    color: var(--paper);
-    border-radius: var(--radius);
+    color: #000;
+    border-radius: 6px;
     translate: 0 -200%;
     transition: translate 0.2s var(--ease-out);
     &:focus { translate: 0 0; }
